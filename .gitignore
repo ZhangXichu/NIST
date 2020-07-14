@@ -1,0 +1,16 @@
+# Ignore everything under "obj"
+obj/*
+
+# ignore text file
+*.txt
+# except cmake file
+!CMakeLists.txt 
+
+# ignore compiled python code
+*.pyc
+
+# ignore result graphs
+*.pdf
+
+# ignore result written to .csv
+*.csv

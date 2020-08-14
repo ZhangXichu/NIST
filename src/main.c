@@ -42,6 +42,8 @@ THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/utilities.h"
 #include "../include/tools.h"
 #include "../include/stat_fncs.h"
+#include "../fft_benchmark/benchmark.h"
+#include "../fft_benchmark/test_data.h"
 
 #ifdef _MSC_VER
 #if _MSC_VER <= 1700
@@ -1427,6 +1429,7 @@ speed(int scale, int repeat, int test_from, int test_to)
 	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 #endif
 
+	n = 1024; 
 	setlocale(LC_NUMERIC, "Czech");
 	f = fopen("speed.csv", "wt");
 	if (!f)
@@ -1451,7 +1454,6 @@ speed(int scale, int repeat, int test_from, int test_to)
 		from = 1024 * 1024 * 8 * 20;
 		to = 1024 * 1024 * 8 * 20;
 	}
-
 	// outer loop commented to set new value for n Xichu
 	// for (n = from; n <= to;
 	// n = (scale) ? n * 3 /*((n-1)*2)+1 *//* *10 +rand()%8 */ : n + 1)
@@ -2083,6 +2085,36 @@ main(int argc, char **argv)
 }
 #endif
 #endif
+
+#ifdef BENCHMARK
+int main(){
+	int n, i;
+	// n = 65536;
+	// data_prandom(n);
+	// benchmark(n);
+
+	char *filename = "fft_results/ffts_cpx.txt";
+	// erase the content in file first
+	FILE *out_data = fopen(filename, "w");
+	FILE *out_file = freopen(filename, "a", out_data);
+
+	/* case: N = 2^k */
+	for (i = 0; i < SIZE_P2; i++){
+		n = power2[i];
+		data_prandom(n);
+		benchmark(n, out_file);
+	}
+	fflush(out_file);
+
+	fclose(out_file);
+
+	free(array);
+	free(epsilon);
+
+	return 0;
+}
+#endif
+
 
 #ifdef SPEED
 int

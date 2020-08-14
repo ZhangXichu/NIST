@@ -12,9 +12,12 @@ extern "C" {
 
 // New defines
 // #define VERIFY_RESULTS 1
-#define SPEED 1
+// #define SPEED 1
 // #define FILE_OUTPUT 1
 // #define KS 1
+
+// #define COLLECT_DATA_DFT 1
+#define BENCHMARK 1
 
 // Original stuff
 

@@ -2,8 +2,9 @@ CC = gcc
 GCCFLAGS = -c -Wall
 ROOTDIR = .
 SRCDIR = $(ROOTDIR)/src
+BENCHDIR = $(ROOTDIR)/fft_benchmark
 OBJDIR = $(ROOTDIR)/obj
-VPATH  = src:obj:include
+VPATH  = src:obj:include:fft_benchmark
 
 OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/cusum.o $(OBJDIR)/runs.o $(OBJDIR)/longestRunOfOnes.o \
@@ -14,12 +15,13 @@ OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/randomExcursionsVariant.o $(OBJDIR)/linearComplexity.o \
       $(OBJDIR)/dfft.o $(OBJDIR)/cephes.o $(OBJDIR)/matrix.o \
       $(OBJDIR)/utilities.o $(OBJDIR)/generators.o $(OBJDIR)/genutils.o \
-      $(OBJDIR)/BMA.o $(OBJDIR)/BM.o $(OBJDIR)/LUTs.o $(OBJDIR)/main.o  $(OBJDIR)/tools.o
+      $(OBJDIR)/BMA.o $(OBJDIR)/BM.o $(OBJDIR)/LUTs.o $(OBJDIR)/main.o  $(OBJDIR)/tools.o \
+	  $(OBJDIR)/benchmark.o $(OBJDIR)/bench_ffts.o $(OBJDIR)/timer.o
 
 assess: $(OBJ)
-	$(CC) -o $@ $(OBJ) -lm -lfftw3
+	$(CC) -o $@ $(OBJ) -lm -lfftw3 -L./libs -lffts
 
-$(OBJDIR)/assess.o: $(SRCDIR)/assess.c defs.h decls.h utilities.h fftw3.h
+$(OBJDIR)/assess.o: $(SRCDIR)/assess.c defs.h decls.h utilities.h fftw3.h ffts.h
 	$(CC) -o $@ -c $(SRCDIR)/assess.c
 
 $(OBJDIR)/frequency.o: $(SRCDIR)/frequency.c defs.h externs.h
@@ -98,11 +100,21 @@ $(OBJDIR)/BM.o: $(SRCDIR)/BM.c BM.h
 $(OBJDIR)/LUTs.o: $(SRCDIR)/LUTs.c
 	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/LUTs.c
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.c cephes.h externs.h utilities.h tools.h stat_fncs.h
+$(OBJDIR)/main.o: $(SRCDIR)/main.c cephes.h externs.h utilities.h tools.h stat_fncs.h test_data.h
 	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/main.c
 
 $(OBJDIR)/tools.o: $(SRCDIR)/tools.c
 	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/tools.c
+
+# benchmark
+$(OBJDIR)/benchmark.o: $(BENCHDIR)/benchmark.c benchmark.h stat_fncs.h timer.h
+	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/benchmark.c
+
+$(OBJDIR)/bench_ffts.o: $(BENCHDIR)/bench_ffts.c stat_fncs.h
+	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_ffts.c
+
+$(OBJDIR)/timer.o: $(BENCHDIR)/timer.c timer.h
+	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/timer.c
 
 clean:
 	rm -f assess $(OBJDIR)/*.o

@@ -17,7 +17,7 @@
 #define	Rank_v1 Rank
 #define	Rank_v2 Rank2 //2
 #define	DiscreteFourierTransform_v1 DiscreteFourierTransform
-#define	DiscreteFourierTransform_v2 DiscreteFourierTransform3 //2,3,4
+#define	DiscreteFourierTransform_v2 DiscreteFourierTransformFFTS //2,3,4, ffts
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
 #define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4 //2,4
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings
@@ -94,7 +94,8 @@ void	ApproximateEntropy4(int m, int n);
 void	OverlappingTemplateMatchings4(int m, int n); 
 void    NonOverlappingTemplateMatchings4(int m, int n); 
 
-
+// Other FFT
+void DiscreteFourierTransformFFTS(int n);
 
 
 

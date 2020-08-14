@@ -18,6 +18,7 @@ void  __ogg_fdrfftf(int n, double *X, double *wsave, int *ifac);
 void
 DiscreteFourierTransform(int n)
 {
+	printf("DFT original version.\n");
 	double  p_value, upperBound, percentile, N_l, N_o, d, *m = NULL, *X = NULL, *wsave = NULL;
 	int		i, count, ifac[15];
 
@@ -44,6 +45,11 @@ DiscreteFourierTransform(int n)
 	
 	__ogg_fdrffti(n, wsave, ifac);		/* INITIALIZE WORK ARRAYS */
 	__ogg_fdrfftf(n, X, wsave, ifac);	/* APPLY FORWARD FFT */
+
+	// check the result
+	// for (i = 0; i < n; i++){
+	// 	printf("%0.2f ", X[i]);
+	// }
 	
 	m[0] = sqrt(X[0]*X[0]);	    /* COMPUTE MAGNITUDE */
 	
@@ -59,7 +65,7 @@ DiscreteFourierTransform(int n)
 	N_o = (double) 0.95*n/2.0;
 	d = (N_l - N_o)/sqrt(n/4.0*0.95*0.05);
 	p_value = erfc(fabs(d)/sqrt(2.0));
-	//printf("%lf ",p_value);
+	printf("p-value: %lf \n ",p_value);
 #ifdef SPEED
 	dummy_result = p_value + percentile;
 #endif
@@ -345,12 +351,36 @@ DiscreteFourierTransform4(int n)
 		in[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1;
 	}
 
+	#ifdef COLLECT_DATA_DFT
+	for (i = 0; i < n/8; i++){
+	   	// a input with obivious pattern
+		in[i+3]= 1;
+	}
+	#endif
+
 	fftw_execute(p);
 
 	m[0] = sqrt(out[0][0] * out[0][0]);
 
 	for (i = 0; i<n / 2; i++)
 		m[i + 1] = sqrt(pow(out[i + 1][0], 2) + pow(out[i + 1][1], 2));
+
+	#ifdef COLLECT_DATA_DFT
+	// write m to a file 
+	char *filename = "fft_feature/amplitudes0.txt";
+	// erase the content in file first
+	FILE *out_data = fopen(filename, "w");
+	FILE *out_file = freopen(filename, "a", out_data);
+
+	// write the amplitude to file
+	for (i = 0; i < n/2 + 1; i++){
+		printf("%0.2f\n", m[i]);
+		fprintf(out_file, "%0.2f\n", m[i], out_data);
+	}
+	fflush(out_file);
+
+	fclose(out_file);
+	#endif
 
 	fftw_destroy_plan(p);
 
@@ -359,11 +389,18 @@ DiscreteFourierTransform4(int n)
 	for (i = 0; i<n / 2; i++)
 	if (m[i] < upperBound)
 		count++;
-	percentile = (double)count / (n / 2) * 100;
 	N_l = (double)count;      
 	N_o = (double) 0.95*n / 2.0;
 	d = (N_l - N_o) / sqrt(n / 4.0*0.95*0.05);
 	p_value = erfc(fabs(d) / sqrt(2.0));
+
+
+	#ifdef COLLECT_DATA_DFT
+	printf("upperBound: %0.5f\n", upperBound);
+	printf("count: %0.5f \n", N_l);
+	printf("p_value: %0.5f\n", p_value);
+	#endif
+
 
 #ifdef SPEED
 	dummy_result = p_value + percentile;

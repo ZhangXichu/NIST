@@ -17,12 +17,14 @@
 
 void benchmark(int n, FILE *out_file){
 	/* the original fft */
-	// DiscreteFourierTransform_v1(n);
+#ifdef P_VALUE
+	DiscreteFourierTransform_v1(n);
+#endif
 
-	benchmark_ffts(n, out_file);
+	benchmark_aux(n, out_file);
 }
 
-void benchmark_ffts(int n, FILE *out_file){ /* total time of fft transformation */
+void benchmark_aux(int n, FILE *out_file){ /* total time of fft transformation */
 	clock_t time;
 
 	time = work(&DiscreteFourierTransform_v2, n);
@@ -31,5 +33,5 @@ void benchmark_ffts(int n, FILE *out_file){ /* total time of fft transformation 
 }
 
 
-// TODO: repeat and take average. refactor 
+// # TODO: repeat and take average. refactor 
 // TODO: test initialization and execution timer separately

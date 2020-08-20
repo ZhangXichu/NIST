@@ -14,3 +14,7 @@ obj/*
 
 # ignore result written to .csv
 *.csv
+
+# ignore libraries
+*.a
+*.so

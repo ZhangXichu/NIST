@@ -1,34 +1,55 @@
 #include <stdint.h>
-#include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "../include/config.h"
 
 #include "timer.h"
 
 // On Linux use asm
-// uint64_t
-// GetCpuClocks()
-// {
-// 	unsigned int low, high;
-// 	__asm__ __volatile__("rdtsc":"=a" (low), "=d" (high));
-// 	return ((uint64_t)high << 32) | low;
-// }
+uint64_t GetCpuClocks()
+{
+	unsigned int low, high;
+	__asm__ __volatile__("rdtsc":"=a" (low), "=d" (high));
+	return ((uint64_t)high << 32) | low;
+}
 
 clock_t GetTickCount() /* Btime */
 {
 	return clock();
 }
 
-clock_t work(dft* f, int n){
-    clock_t start, end, time;
+uint64_t work(dft* f, int n){
+    long time_e;
+    struct timespec start, stop;
+    int i;
 
-	// flushcache();
-	start = GetTickCount();
-	(*f)(n);
-	end = GetTickCount();
+#ifndef P_VALUE
+    flushcache();
+#endif
 
-	time = end - start;
+	if( clock_gettime( CLOCK_REALTIME, &start) == -1 ) {
+      perror( "clock gettime" );
+      return EXIT_FAILURE;
+    }
 
-    return time;
+    for (i = 0; i < K; i++){
+	    (*f)(n);
+    }
+
+	if( clock_gettime( CLOCK_REALTIME, &stop) == -1 ) {
+      perror( "clock gettime" );
+      return EXIT_FAILURE;
+    }
+
+#ifndef P_VALUE
+    printf("start: %lu seconds %lu nanoseconds \n", start.tv_sec, start.tv_nsec);
+    printf("end: %lu seconds %lu nanoseconds \n", stop.tv_sec, stop.tv_nsec);
+#endif
+
+	time_e = (stop.tv_sec - start.tv_sec) * NANO + (stop.tv_nsec - start.tv_nsec);
+	time_e = round(time_e / K); /* take the average */
+
+    return time_e / M;  /*convert to microseconds*/
 }
 
 void flushcache()

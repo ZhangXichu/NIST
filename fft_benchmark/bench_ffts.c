@@ -10,16 +10,14 @@
 #include "../include/stat_fncs.h"
 
 #include "../include/ffts.h"
+#include "statistics.h"
 
-void
-DiscreteFourierTransformFFTS(int n)
+void DiscreteFourierTransformFFTS(int n)
 {
-	printf("DFT FFTS.\n");
-
 	int i, count;
-	double upperBound, p_value, percentile, N_l, N_o, d;
 	float *in, *out;  /* single precision */
 	double *m;
+	double p_value;
 
 	if (((in = (float *)calloc(2 * n, sizeof(float))) == NULL) ||
 		((out = (float *)calloc(2 * n, sizeof(float))) == NULL) ||
@@ -36,15 +34,9 @@ DiscreteFourierTransformFFTS(int n)
 
 	/* convert bit sequence to sequence of 1 and -1, and prepare the complex input data */
 	for (i = 0; i < n; i++){
-		in[2 * i] = 2 * epsilon[i] - 1; // Re
+		in[2 * i] = 2*((double)(get_nth_block4(array,i) & 1))-1;; // Re
 		in[2 * i + 1] = 0; // Im
 	}
-
-	/* input */
-	// for (i = 0; i < 2 * n; i++){ // print out input
-	// 	printf("%0.2f ", in[i]);
-	// }
-	// printf("\n");
 
 	ffts_plan_t *p;
 
@@ -60,33 +52,69 @@ DiscreteFourierTransformFFTS(int n)
 
 	ffts_free(p);
 
-	/* statistical data */
-	// m[0] = sqrt(pow(out[0], 2));
+	/* calculate amplitude */
 	for (i = 0; i < n / 2 + 1; i++){
 		m[i] = sqrt(pow(out[2*i], 2) + pow(out[2*i+1], 2));
 	}
-	upperBound = sqrt(2.995732274*n);
-	count = 0;
-	for (i = 0; i < n/2; i++){
-		if (m[i] < upperBound)
-			count++;
+
+	/* statistical data */
+	p_value = get_pvalue(n, m);
+	printf("DFT FFTS: p_value: %lf \n",p_value); /* use p-value to verify the result */
+
+	free(in);
+	free(out);
+	free(m);
+}
+
+void DiscreteFourierTransformFFTSr(int n) /* real transformation */
+{
+	int i, count;
+	float *in, *out;  /* single precision */
+	double *m;
+	double p_value;
+
+	if (((in = (float *)calloc(n, sizeof(float))) == NULL) ||
+		((out = (float *)calloc(n + 2, sizeof(float))) == NULL) ||
+		((m = (double*)calloc(n / 2 + 1, sizeof(double))) == NULL)) {
+		printf("\t\tUnable to allocate working arrays for the DFT.\n");
+		if (in != NULL)
+			free(in);
+		if (out != NULL)
+			free(out);
+		if (m != NULL)
+			free(m);
+		return;
 	}
-	percentile = (double)count/(n/2)*100;
-	N_l = (double) count;       /* number of peaks less than h = sqrt(3*n) */
-	N_o = (double) 0.95*n/2.0;
-	d = (N_l - N_o)/sqrt(n/4.0*0.95*0.05);
-	p_value = erfc(fabs(d)/sqrt(2.0));
 
-	// printf("p_value: %lf \n",p_value); /* use p-value to verify the result */
+	for (i = 0; i < n; i++){
+		// in[2 * i] = 2 * epsilon[i] - 1; // Re
+		// in[2 * i + 1] = 0; // Im
+		in[i] = 2*epsilon[i] - 1;
+	}
 
-#ifdef VERIFY_RESULTS /* need to modify the testing code, since ffts supports only N = 2^k */
-	R_.dft.p_value=p_value;
-	R_.dft.percentile=percentile;
-	R_.dft.N_l=N_l;
-	R_.dft.N_o=N_o;
-	R_.dft.d=d;
-	if(DiscreteFourierTransform_v1 == DiscreteFourierTransformFFTS) R1 = R_;
-	else R2 = R_;
-#endif
+	ffts_plan_t *p;
 
+	p = ffts_init_1d_real(n, FFTS_FORWARD); 
+
+	ffts_execute(p, in, out);
+
+	ffts_free(p);
+
+	// for (i = 0; i < n + 2; i++){
+	// 	printf("%0.2f ", out[i]);
+	// }
+	// printf("\n");
+
+	/* calculate amplitude */
+	for (i = 0; i < n / 2 + 1; i++){
+		m[i] = sqrt(pow(out[2*i], 2) + pow(out[2*i+1], 2));
+	}
+
+	/* statistical data */
+	p_value = get_pvalue(n, m);
+	printf("DFT FFTS: p_value: %lf \n",p_value); /* use p-value to verify the result */
+
+	free(in);
+	free(out);
+	free(m);
 }

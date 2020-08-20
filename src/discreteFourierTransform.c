@@ -18,7 +18,6 @@ void  __ogg_fdrfftf(int n, double *X, double *wsave, int *ifac);
 void
 DiscreteFourierTransform(int n)
 {
-	printf("DFT original version.\n");
 	double  p_value, upperBound, percentile, N_l, N_o, d, *m = NULL, *X = NULL, *wsave = NULL;
 	int		i, count, ifac[15];
 
@@ -47,9 +46,10 @@ DiscreteFourierTransform(int n)
 	__ogg_fdrfftf(n, X, wsave, ifac);	/* APPLY FORWARD FFT */
 
 	// check the result
-	// for (i = 0; i < n; i++){
+	// for (i = 0; i < n-1; i++){
 	// 	printf("%0.2f ", X[i]);
 	// }
+	// printf("\n");
 	
 	m[0] = sqrt(X[0]*X[0]);	    /* COMPUTE MAGNITUDE */
 	
@@ -65,7 +65,9 @@ DiscreteFourierTransform(int n)
 	N_o = (double) 0.95*n/2.0;
 	d = (N_l - N_o)/sqrt(n/4.0*0.95*0.05);
 	p_value = erfc(fabs(d)/sqrt(2.0));
-	printf("p-value: %lf \n ",p_value);
+#ifdef P_VALUE
+	printf("Original: p-value: %lf \n ",p_value);
+#endif
 #ifdef SPEED
 	dummy_result = p_value + percentile;
 #endif
@@ -183,7 +185,7 @@ DiscreteFourierTransform2(int n)
 	N_o = (double) 0.95*n/2.0;
 	d = (N_l - N_o)/sqrt(n/4.0*0.95*0.05);
 	p_value = erfc(fabs(d)/sqrt(2.0));
-	//printf("%lf\n",p_value);
+	// printf("%lf\n",p_value);
 #ifdef SPEED
 	dummy_result = p_value + percentile;
 #endif
@@ -227,7 +229,7 @@ DiscreteFourierTransform2(int n)
 #include "../include/fftw3.h"
 
 void
-DiscreteFourierTransform3(int n)
+DiscreteFourierTransform3(int n) /* complex transformation */
 {
 	double	p_value, upperBound, percentile, N_l, N_o, d, *m = NULL;
 	fftw_complex *in, *out;
@@ -279,6 +281,8 @@ DiscreteFourierTransform3(int n)
 	N_o = (double) 0.95*n / 2.0;
 	d = (N_l - N_o) / sqrt(n / 4.0*0.95*0.05);
 	p_value = erfc(fabs(d) / sqrt(2.0));
+
+	printf("FFTW cpx p_value: %lf \n ",p_value);
 #ifdef SPEED
 	dummy_result = p_value + percentile;
 #endif
@@ -318,7 +322,7 @@ DiscreteFourierTransform3(int n)
 
 
 void
-DiscreteFourierTransform4(int n)
+DiscreteFourierTransform4(int n) /* real FFT */
 {
 	double	p_value, upperBound, percentile, N_l, N_o, d, *m = NULL;
 	fftw_complex *out;
@@ -393,6 +397,9 @@ DiscreteFourierTransform4(int n)
 	N_o = (double) 0.95*n / 2.0;
 	d = (N_l - N_o) / sqrt(n / 4.0*0.95*0.05);
 	p_value = erfc(fabs(d) / sqrt(2.0));
+#ifdef P_VALUE
+	printf("FFTW real p_value: %lf \n ",p_value);
+#endif
 
 
 	#ifdef COLLECT_DATA_DFT

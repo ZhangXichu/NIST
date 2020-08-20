@@ -2087,25 +2087,47 @@ main(int argc, char **argv)
 #endif
 
 #ifdef BENCHMARK
+
+// #define POW2 1  /* case: N = 2^k */
+// #define SMALL_FACTOR 1  /* case: N = 2^a 3^b 5^c 7^d */
+#define PRIME 1 /* case: N is prime */
+
 int main(){
-	int n, i;
-	// n = 65536;
+	/* Test 1 */
+	// int n, i;
+	// n = 4; //n = 311; // 64th prime number
 	// data_prandom(n);
-	// benchmark(n);
 
-	char *filename = "fft_results/ffts_cpx.txt";
-	// erase the content in file first
+	// DiscreteFourierTransform_v2(n);
+	// DiscreteFourierTransform_v1(n);
+
+	/* Test 2 */
+	int n, i;
+	int size_n;
+	int *data;
+#ifdef POW2
+	char *filename = "fft_results/pow2/fftw_real.txt"; /* change accordingly */
+	size_n = SIZE_P2;
+	data = power2;
+#elif SMALL_FACTOR
+	char *filename = "fft_results/small_factor/fftw_real.txt"; /* change accordingly */
+	size_n = SIZE_SM;
+	data = small_factors;
+#elif PRIME
+	char *filename = "fft_results/prime/fftw_real.txt"; /* change accordingly */
+	size_n = SIZE_PR;
+	data = primes;
+#endif
+	printf("output: %s\n", filename);
+	// erase the content in the previous file
 	FILE *out_data = fopen(filename, "w");
-	FILE *out_file = freopen(filename, "a", out_data);
-
-	/* case: N = 2^k */
-	for (i = 0; i < SIZE_P2; i++){
-		n = power2[i];
+	FILE *out_file = freopen(filename, "a", out_data);	
+	for (i = 0; i < size_n; i++){
+		n = data[i];
 		data_prandom(n);
 		benchmark(n, out_file);
 	}
 	fflush(out_file);
-
 	fclose(out_file);
 
 	free(array);

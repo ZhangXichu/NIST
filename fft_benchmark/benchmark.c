@@ -29,7 +29,7 @@ void benchmark_aux(int n, FILE *out_file){ /* total time of fft transformation *
 
 	time = work(&DiscreteFourierTransform_v2, n);
 	fprintf(out_file, "%d %jd\n", n, time);  /*format: [index] [speed]*/
-	printf("Time elepsed: %jd\n", time);
+	printf("Index, Time: %d %jd\n", n, time);
 }
 
 

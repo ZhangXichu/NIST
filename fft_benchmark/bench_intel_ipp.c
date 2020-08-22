@@ -24,8 +24,7 @@ void DiscreteFourierTransformIPP(int n){
     IppsDFTSpec_C_64fc *spec = 0; /* initialized by the init function */
 
     double* m;
-    double p_value;
-
+    
     in = ippsMalloc_64fc(n);
     out = ippsMalloc_64fc(n); 
 
@@ -63,9 +62,88 @@ void DiscreteFourierTransformIPP(int n){
     for (i = 0; i < n/2; i++){
         m[i] = sqrt(pow(out[i].re,2)+pow(out[i].im,2));
     }
+#ifdef P_VALUE
+    double p_value;
     p_value = get_pvalue(n, m);
-    // printf("intel IPP: p-value: %lf \n ",p_value);
+    printf("intel IPP: p-value: %lf \n ",p_value);
+#endif
 
+    if (initBuf) ippsFree(initBuf);
+    if (workBuf) ippsFree(workBuf);
+    if (spec) ippsFree(spec);
+
+    ippsFree(in);
+    ippsFree(out);
+
+    free(m);
+}
+
+void DiscreteFourierTransformIPPr(int n){
+
+    int i;
+    int sizeSpec=0, sizeInitBuf=0, sizeWorkBuf=0;
+    IppStatus status;
+    Ipp64f *in;
+    Ipp64f *out;
+    Ipp8u *initBuf, *workBuf;
+    IppsDFTSpec_R_64f* spec = NULL; /* initialized by the init function */
+
+    double* m;
+
+    in = ippsMalloc_64f(n);
+    out = ippsMalloc_64f(n + 2);  
+
+    status = ippsDFTGetSize_R_64f(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
+
+    spec = (IppsDFTSpec_R_64f *)ippsMalloc_8u(sizeSpec);
+    initBuf = ippsMalloc_8u(sizeInitBuf);
+    workBuf = ippsMalloc_8u(sizeWorkBuf);
+
+    m = (double *)calloc(n/2 + 1, sizeof(double));
+
+    for (i = 0; i < n; i++){
+        in[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1; 
+    }
+
+    /* initialization */
+    status = ippsDFTInit_R_64f(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, spec, initBuf); /* temp work buffer not used */
+
+    /* transformation */
+    status = ippsDFTFwd_RToPerm_64f(in, out, spec, workBuf);
+
+    m[0] = out[0];
+    if (n % 2 == 0) {
+        for ( i=0; i < n/2 - 1; i++ ) {
+            m[i+1] = sqrt(pow(out[2*i+2], 2) + pow(out[2*i+3], 2));
+#ifdef DEBUG
+		printf("%0.2f + %0.2fi \n", out[2*i+2], out[2*i+3]);
+#endif
+        }
+        m[n/2] = out[1];  /* Im X[0] and Im X[N/2] are 0 */
+    } else {
+        for ( i=0; i < n/2; i++ ) {
+            m[i+1] = sqrt(pow(out[2*i+1], 2) + pow(out[2*i+2], 2));
+#ifdef DEBUG
+		printf("%0.2f + %0.2fi \n", out[2*i+1], out[2*i+2]);
+#endif
+        }
+	}
+
+#ifdef DEBUG
+    printf("IPP: The transformed results \n");
+    for (i = 0; i < n + 1; i++){
+        printf("%0.2f ", out[i]);
+    }
+    printf("\n");
+#endif
+
+#ifdef P_VALUE
+    double p_value;
+    p_value = get_pvalue(n, m);
+    printf("intel IPP real: p-value: %lf \n ",p_value);
+#endif
+
+    /* free */
     if (initBuf) ippsFree(initBuf);
     if (workBuf) ippsFree(workBuf);
     if (spec) ippsFree(spec);

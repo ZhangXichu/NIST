@@ -16,8 +16,12 @@
 #define	LongestRunOfOnes_v2 LongestRunOfOnes3 //2,3
 #define	Rank_v1 Rank
 #define	Rank_v2 Rank2 //2
-#define	DiscreteFourierTransform_v1 DiscreteFourierTransform
-#define	DiscreteFourierTransform_v2 DiscreteFourierTransform4 //2,3,4
+#ifdef DEBUG
+    #define	DiscreteFourierTransform_v1 DiscreteFourierTransform
+#else
+    #define	DiscreteFourierTransform_v1 DiscreteFourierTransform4
+#endif
+#define	DiscreteFourierTransform_v2 DiscreteFourierTransformPocketr //2,3,4
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
 #define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4 //2,4
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings
@@ -98,12 +102,22 @@ void    NonOverlappingTemplateMatchings4(int m, int n);
 void DiscreteFourierTransformFFTS(int n);
 void DiscreteFourierTransformFFTSr(int n); /* real FFT */
 
-
 void DiscreteFourierTransformKFR(int n);
+void DiscreteFourierTransformKFRr(int n); /* real FFT */
+
+//// doesn't work for small factors ///////
 void DiscreteFourierTransformMKL(int n);
+void DiscreteFourierTransformMKLr(int n); /* real FFT */
+///////////////////////////////////////////
+
 void DiscreteFourierTransformIPP(int n);
+void DiscreteFourierTransformIPPr(int n);
+
 void DiscreteFourierTransformPocket(int n);
+void DiscreteFourierTransformPocketr(int n);
+
 void DiscreteFourierTransformGSL(int n);
+void DiscreteFourierTransformGSLr(int n);
 
 // TODO: the last one: clfft
 

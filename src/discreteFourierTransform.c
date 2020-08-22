@@ -45,16 +45,26 @@ DiscreteFourierTransform(int n)
 	__ogg_fdrffti(n, wsave, ifac);		/* INITIALIZE WORK ARRAYS */
 	__ogg_fdrfftf(n, X, wsave, ifac);	/* APPLY FORWARD FFT */
 
-	// check the result
-	// for (i = 0; i < n-1; i++){
-	// 	printf("%0.2f ", X[i]);
-	// }
-	// printf("\n");
-	
 	m[0] = sqrt(X[0]*X[0]);	    /* COMPUTE MAGNITUDE */
-	
-	for ( i=0; i<n/2; i++ )
+
+#ifdef DEBUG
+	printf("Original: result complex numbers \n");
+#endif	
+	for ( i=0; i<n/2; i++ ) {
 		m[i+1] = sqrt(pow(X[2*i+1],2)+pow(X[2*i+2],2)); 
+#ifdef DEBUG
+		printf("%0.2f + %0.2fi \n", X[2*i+1], X[2*i+2]);
+#endif
+	}
+
+#ifdef DEBUG
+	printf("Original: The transformed results: \n");
+	for (i = 0; i < n; i++){
+		printf("%0.2f ", X[i]);
+	}
+	printf("\n");
+#endif
+
 	count = 0;				       /* CONFIDENCE INTERVAL */
 	upperBound = sqrt(2.995732274*n);
 	for ( i=0; i<n/2; i++ )
@@ -65,9 +75,16 @@ DiscreteFourierTransform(int n)
 	N_o = (double) 0.95*n/2.0;
 	d = (N_l - N_o)/sqrt(n/4.0*0.95*0.05);
 	p_value = erfc(fabs(d)/sqrt(2.0));
+
+	
+
 #ifdef P_VALUE
 	printf("Original: p-value: %lf \n ",p_value);
+	pv1 = p_value;
 #endif
+
+	
+
 #ifdef SPEED
 	dummy_result = p_value + percentile;
 #endif
@@ -282,7 +299,11 @@ DiscreteFourierTransform3(int n) /* complex transformation */
 	d = (N_l - N_o) / sqrt(n / 4.0*0.95*0.05);
 	p_value = erfc(fabs(d) / sqrt(2.0));
 
+#ifdef P_VALUE
 	printf("FFTW cpx p_value: %lf \n ",p_value);
+	pv1 = p_value;
+#endif
+
 #ifdef SPEED
 	dummy_result = p_value + percentile;
 #endif
@@ -397,8 +418,10 @@ DiscreteFourierTransform4(int n) /* real FFT */
 	N_o = (double) 0.95*n / 2.0;
 	d = (N_l - N_o) / sqrt(n / 4.0*0.95*0.05);
 	p_value = erfc(fabs(d) / sqrt(2.0));
+
 #ifdef P_VALUE
 	printf("FFTW real p_value: %lf \n ",p_value);
+	pv1 = p_value;
 #endif
 
 

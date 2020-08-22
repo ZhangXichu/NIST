@@ -34,6 +34,14 @@ extern Pvals pvals;
 extern CmdFlags cmdFlags;
 #endif
 
+/* for comparing the p-values calculated by spectral analysis */
+#ifdef P_VALUE
+	#define ERR 0.0000001
+	extern double pv1;
+	extern double pv2;
+#endif
+
+
 // Original stuff
 extern BitSequence              *epsilon;				// BIT STREAM
 extern TP			tp;						// TEST PARAMETER STRUCTURE

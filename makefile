@@ -33,7 +33,7 @@ assess: $(OBJ)  # -Wl,--verbose
 	-L./libs/intel_ipp -lippcore -lippvm -lipps \
 	-lpthread -ldl 
 
-$(OBJDIR)/assess.o: $(SRCDIR)/assess.c defs.h decls.h utilities.h fftw3.h ffts.h config.h
+$(OBJDIR)/assess.o: $(SRCDIR)/assess.c defs.h decls.h utilities.h fftw3.h ffts.h config.h externs.h
 	$(CC) -o $@ -c $(SRCDIR)/assess.c 
 
 $(OBJDIR)/frequency.o: $(SRCDIR)/frequency.c defs.h externs.h config.h
@@ -119,34 +119,34 @@ $(OBJDIR)/tools.o: $(SRCDIR)/tools.c config.h
 	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/tools.c
 
 # benchmark
-$(OBJDIR)/benchmark.o: $(BENCHDIR)/benchmark.c benchmark.h stat_fncs.h timer.h config.h
+$(OBJDIR)/benchmark.o: $(BENCHDIR)/benchmark.c benchmark.h stat_fncs.h timer.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/benchmark.c
 
-$(OBJDIR)/timer.o: $(BENCHDIR)/timer.c timer.h config.h
+$(OBJDIR)/timer.o: $(BENCHDIR)/timer.c timer.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/timer.c
 
-$(OBJDIR)/statistics.o: $(BENCHDIR)/statistics.c statistics.h config.h
+$(OBJDIR)/statistics.o: $(BENCHDIR)/statistics.c statistics.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/statistics.c
 
-$(OBJDIR)/bench_ffts.o: $(BENCHDIR)/bench_ffts.c stat_fncs.h config.h
+$(OBJDIR)/bench_ffts.o: $(BENCHDIR)/bench_ffts.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_ffts.c
 
-$(OBJDIR)/bench_kfr.o: $(BENCHDIR)/bench_kfr.c stat_fncs.h config.h
+$(OBJDIR)/bench_kfr.o: $(BENCHDIR)/bench_kfr.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_kfr.c
 
-$(OBJDIR)/bench_intel_mkl.o: $(BENCHDIR)/bench_intel_mkl.c stat_fncs.h config.h
+$(OBJDIR)/bench_intel_mkl.o: $(BENCHDIR)/bench_intel_mkl.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_intel_mkl.c
 
-$(OBJDIR)/bench_intel_ipp.o: $(BENCHDIR)/bench_intel_ipp.c stat_fncs.h config.h
+$(OBJDIR)/bench_intel_ipp.o: $(BENCHDIR)/bench_intel_ipp.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_intel_ipp.c
  
-$(OBJDIR)/pocketfft.o: $(BENCHDIR)/pocketfft.c pocketfft.h config.h
+$(OBJDIR)/pocketfft.o: $(BENCHDIR)/pocketfft.c pocketfft.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/pocketfft.c
 
-$(OBJDIR)/bench_pocket.o: $(BENCHDIR)/bench_pocket.c stat_fncs.h config.h
+$(OBJDIR)/bench_pocket.o: $(BENCHDIR)/bench_pocket.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_pocket.c
 
-$(OBJDIR)/bench_gsl.o: $(BENCHDIR)/bench_gsl.c stat_fncs.h config.h
+$(OBJDIR)/bench_gsl.o: $(BENCHDIR)/bench_gsl.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_gsl.c
 
 clean:

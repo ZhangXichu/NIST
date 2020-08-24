@@ -2088,9 +2088,9 @@ main(int argc, char **argv)
 
 #ifdef BENCHMARK
 
-#define POW2 1  /* case: N = 2^k */
+// #define POW2 1  /* case: N = 2^k */
 // #define SMALL_FACTOR 1  /* case: N = 2^a 3^b 5^c 7^d */
-// #define PRIME 1 /* case: N is prime */
+#define PRIME 1 /* case: N is prime */
 
 // #define TEST1
 #define TEST2
@@ -2099,7 +2099,7 @@ int main(){
 	/* Test 1 */
 #ifdef TEST1
 	int n;
-	n = 100; //n = 311; // 64th prime number
+	n = 256; //n = 311; // 64th prime number
 	data_prandom(n);
 
 	DiscreteFourierTransform_v2(n);
@@ -2112,15 +2112,15 @@ int main(){
 	int size_n;
 	int *data;
 #ifdef POW2
-	char *filename = "fft_results/pow2/pocket_real.txt"; /* change accordingly */
+	char *filename = "fft_results/pow2/original_cpx.txt"; /* change accordingly */
 	size_n = SIZE_P2;
 	data = power2;
 #elif SMALL_FACTOR
-	char *filename = "fft_results/small_factor/pocket_real.txt"; /* change accordingly */
+	char *filename = "fft_results/small_factor/original_cpx.txt"; /* change accordingly */
 	size_n = SIZE_SM;
 	data = small_factors;
 #elif PRIME
-	char *filename = "fft_results/prime/pocket_real.txt"; /* change accordingly */
+	char *filename = "fft_results/prime/original_cpx.txt"; /* change accordingly */
 	size_n = SIZE_PR;
 	data = primes;
 #endif
@@ -2133,10 +2133,10 @@ int main(){
 		data_prandom(n);
 		benchmark(n, out_file);
 	#ifdef P_VALUE
-		if (abs(pv1 - pv2) < ERR) {
-			printf("n = %d p-value [OK] \n", n);
+		if (fabs(pv1 - pv2) < ERR) {
+			printf("[OK] \n");
 		} else{
-			printf("n = %d p-value [WRONG] \n", n);
+			printf("[WRONG P-VALUE] \n");
 		}
 	#endif
 	}

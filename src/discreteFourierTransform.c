@@ -425,11 +425,11 @@ DiscreteFourierTransform4(int n) /* real FFT */
 #endif
 
 
-	#ifdef COLLECT_DATA_DFT
+#ifdef COLLECT_DATA_DFT
 	printf("upperBound: %0.5f\n", upperBound);
 	printf("count: %0.5f \n", N_l);
 	printf("p_value: %0.5f\n", p_value);
-	#endif
+#endif
 
 
 #ifdef SPEED

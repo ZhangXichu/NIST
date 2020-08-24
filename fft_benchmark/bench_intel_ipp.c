@@ -52,13 +52,6 @@ void DiscreteFourierTransformIPP(int n){
     /* transformation */
     status = ippsDFTFwd_CToC_64fc(in, out, spec, workBuf);
 
-    /* check the transformed result */
-    // printf("\n");
-    // for (i = 0; i < n; i++){
-    //     printf("%0.2f %0.2fi ", out[i].re, out[i].im);
-    // }
-    // printf("\n");
-
     for (i = 0; i < n/2; i++){
         m[i] = sqrt(pow(out[i].re,2)+pow(out[i].im,2));
     }
@@ -66,6 +59,7 @@ void DiscreteFourierTransformIPP(int n){
     double p_value;
     p_value = get_pvalue(n, m);
     printf("intel IPP: p-value: %lf \n ",p_value);
+    pv2 = p_value;
 #endif
 
     if (initBuf) ippsFree(initBuf);
@@ -141,6 +135,7 @@ void DiscreteFourierTransformIPPr(int n){
     double p_value;
     p_value = get_pvalue(n, m);
     printf("intel IPP real: p-value: %lf \n ",p_value);
+    pv2 = p_value;
 #endif
 
     /* free */

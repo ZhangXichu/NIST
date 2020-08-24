@@ -1,5 +1,6 @@
 CC = gcc  #clang
-GCCFLAGS = -c -g -Wall
+OFF = -Wno-unused-variable -Wno-unused-but-set-variable -Wno-misleading-indentation
+GCCFLAGS = -c -g -Wall $(OFF)
 ROOTDIR = .
 SRCDIR = $(ROOTDIR)/src
 BENCHDIR = $(ROOTDIR)/fft_benchmark
@@ -24,13 +25,14 @@ OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/BMA.o $(OBJDIR)/BM.o $(OBJDIR)/LUTs.o $(OBJDIR)/main.o  $(OBJDIR)/tools.o \
 	  $(OBJDIR)/benchmark.o $(OBJDIR)/timer.o $(OBJDIR)/statistics.o $(OBJDIR)/bench_ffts.o \
 	  $(OBJDIR)/bench_kfr.o $(OBJDIR)/bench_intel_mkl.o $(OBJDIR)/bench_intel_ipp.o \
-	  $(OBJDIR)/pocketfft.o $(OBJDIR)/bench_pocket.o $(OBJDIR)/bench_gsl.o
+	  $(OBJDIR)/pocketfft.o $(OBJDIR)/bench_pocket.o $(OBJDIR)/bench_gsl.o $(OBJDIR)/bench_fftss.o
 
 assess: $(OBJ)  # -Wl,--verbose
 	$(CC) -o $@ $(OBJ) -m64 -lm -L./libs -lffts -lfftw3 -lkfr_capi \
 	-lgsl -lgslcblas \
 	-L./libs/intel_mkl -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 \
 	-L./libs/intel_ipp -lippcore -lippvm -lipps \
+	-L./libs/fftss -lfftss \
 	-lpthread -ldl 
 
 $(OBJDIR)/assess.o: $(SRCDIR)/assess.c defs.h decls.h utilities.h fftw3.h ffts.h config.h externs.h
@@ -148,6 +150,9 @@ $(OBJDIR)/bench_pocket.o: $(BENCHDIR)/bench_pocket.c stat_fncs.h config.h extern
 
 $(OBJDIR)/bench_gsl.o: $(BENCHDIR)/bench_gsl.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_gsl.c
+
+$(OBJDIR)/bench_fftss.o: $(BENCHDIR)/bench_fftss.c stat_fncs.h config.h externs.h
+	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftss.c
 
 clean:
 	rm -f assess $(OBJDIR)/*.o

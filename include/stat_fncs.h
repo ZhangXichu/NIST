@@ -21,7 +21,7 @@
 #else
     #define	DiscreteFourierTransform_v1 DiscreteFourierTransform4
 #endif
-#define	DiscreteFourierTransform_v2 DiscreteFourierTransformPocketr //2,3,4
+#define	DiscreteFourierTransform_v2 DiscreteFourierTransform //2,3,4
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
 #define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4 //2,4
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings
@@ -98,28 +98,28 @@ void	ApproximateEntropy4(int m, int n);
 void	OverlappingTemplateMatchings4(int m, int n); 
 void    NonOverlappingTemplateMatchings4(int m, int n); 
 
-// Other FFT
-void DiscreteFourierTransformFFTS(int n);
-void DiscreteFourierTransformFFTSr(int n); /* real FFT */
 
-void DiscreteFourierTransformKFR(int n);
-void DiscreteFourierTransformKFRr(int n); /* real FFT */
+/* Other FFTs */
+void DiscreteFourierTransformFFTS(int n); /* all sizes */
+void DiscreteFourierTransformFFTSr(int n); /* real FFT */ /* all sizes */
 
-//// doesn't work for small factors ///////
-void DiscreteFourierTransformMKL(int n);
-void DiscreteFourierTransformMKLr(int n); /* real FFT */
-///////////////////////////////////////////
+void DiscreteFourierTransformKFR(int n); /* all sizes */
+void DiscreteFourierTransformKFRr(int n); /* real FFT */ /* all sizes */
 
-void DiscreteFourierTransformIPP(int n);
-void DiscreteFourierTransformIPPr(int n);
+void DiscreteFourierTransformIPP(int n); /* all sizes */
+void DiscreteFourierTransformIPPr(int n); /* real FFT */ /* all sizes */
 
-void DiscreteFourierTransformPocket(int n);
-void DiscreteFourierTransformPocketr(int n);
+void DiscreteFourierTransformPocket(int n); /* all sizes */
+void DiscreteFourierTransformPocketr(int n); /* real FFT */ /* all sizes */
 
-void DiscreteFourierTransformGSL(int n);
-void DiscreteFourierTransformGSLr(int n);
+void DiscreteFourierTransformGSL(int n);/* all sizes */ 
+void DiscreteFourierTransformGSLr(int n); /* real FFT */ /* all sizes */
 
-// TODO: the last one: clfft
+void DiscreteFourierTransformMKL(int n); /* doesn't work for small factors */
+void DiscreteFourierTransformMKLr(int n); /* real FFT */ /* supports only pow2 */
+
+void DiscreteFourierTransformFFTSS(int n); /* supports only pow2 */
+
 
 /*
 

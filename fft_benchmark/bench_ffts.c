@@ -87,9 +87,7 @@ void DiscreteFourierTransformFFTSr(int n) /* real transformation */
 	}
 
 	for (i = 0; i < n; i++){
-		// in[2 * i] = 2 * epsilon[i] - 1; // Re
-		// in[2 * i + 1] = 0; // Im
-		in[i] = 2*epsilon[i] - 1;
+		in[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1;
 	}
 
 	ffts_plan_t *p;

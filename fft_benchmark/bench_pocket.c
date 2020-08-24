@@ -72,7 +72,6 @@ void DiscreteFourierTransformPocketr(int n){ /* in-place transformation */
     }
     status = rfft_forward(p, data, 1); 
 
-    /* check the transformed result */
 #ifdef DEBUG
     printf("Output of DFT: 'n");
     for (i = 0; i < n; i++){
@@ -93,6 +92,7 @@ void DiscreteFourierTransformPocketr(int n){ /* in-place transformation */
 #ifdef P_VALUE
     p_value = get_pvalue(n, m);
     printf("PocketFFTr: p_value: %lf \n", p_value);
+    pv2 = p_value;
 #endif
 
     destroy_rfft_plan(p);

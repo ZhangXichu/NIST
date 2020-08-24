@@ -22,7 +22,6 @@ void DiscreteFourierTransformMKL(int n){
     mkl_cpx64 *out;
     MKL_LONG status;
     double *m;
-    double p_value;
 
     if (((in = (mkl_cpx64 *)calloc(n, sizeof(mkl_cpx64))) == NULL) ||
 		((out = (mkl_cpx64 *)calloc(n, sizeof(mkl_cpx64))) == NULL) ||
@@ -62,8 +61,10 @@ void DiscreteFourierTransformMKL(int n){
     }
 
 #ifdef P_VALUE
+    double p_value;
     p_value = get_pvalue(n, m);
     printf("MKL: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    pv2 = p_value;
 #endif
 
     free(in);
@@ -78,7 +79,6 @@ void DiscreteFourierTransformMKLr(int n){
     mkl_cpx64 *out;
     MKL_LONG status;
     double *m;
-    double p_value;
 
     if (((in = (double *)calloc(n, sizeof(double))) == NULL) ||
 		((out = (mkl_cpx64 *)calloc(n/2+1, sizeof(mkl_cpx64))) == NULL) ||
@@ -118,8 +118,10 @@ void DiscreteFourierTransformMKLr(int n){
     }
 
 #ifdef P_VALUE
+    double p_value;
     p_value = get_pvalue(n, m);
     printf("MKL: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    pv2 = p_value;
 #endif
 
     free(in);

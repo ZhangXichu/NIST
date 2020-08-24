@@ -51,8 +51,12 @@ void DiscreteFourierTransformGSL(int n){
     for (i = 0; i < n/2; i++){
         m[i] = sqrt(pow(REAL(in,i), 2) + pow(IMAG(in,i), 2));
     }
-    p_value = get_pvalue(n, m);
-    printf("GSL p_value: %lf\n", p_value);
+
+    #ifdef P_VALUE
+      p_value = get_pvalue(n, m);
+      printf("GSL p_value: %lf\n", p_value);
+      pv2 = p_value;
+    #endif
 
     gsl_fft_complex_wavetable_free(wavetable);
     gsl_fft_complex_workspace_free(workspace);

@@ -23,8 +23,7 @@ void DiscreteFourierTransformKFR(int n){
     double *m;
 
     /* allocate memory for input, output */
-    // in = (kfr_c64 *)kfr_allocate(n * sizeof(kfr_c64));
-    in = (double *)kfr_allocate(n * sizeof(double));
+    in = (kfr_c64 *)kfr_allocate(n * sizeof(kfr_c64));
     out = (kfr_c64 *)kfr_allocate(n * sizeof(kfr_c64));
     m = (double *)calloc(n, sizeof(double));
 
@@ -35,9 +34,9 @@ void DiscreteFourierTransformKFR(int n){
     KFR_DFT_PLAN_F64* p64 = kfr_dft_create_plan_f64(n);
 
     temp_size = kfr_dft_get_temp_size_f64(p64);
-    // printf("temp_size: %d\n", temp_size);
 
     kfr_dft_execute_f64(p64, out, in, &temp_size);
+
 
 #ifdef DEBUG
     printf("KFR Output of DFT: \n");
@@ -56,6 +55,7 @@ void DiscreteFourierTransformKFR(int n){
     double p_value;
     p_value = get_pvalue(n, m);
     printf("KFR: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    pv2 = p_value;
 #endif
 
     /* free */
@@ -75,18 +75,16 @@ void DiscreteFourierTransformKFRr(int n){ /* real transformation */
 
     m = (double *)calloc(n/2 + 1, sizeof(double));
     /* allocate memory for input, output */
-    // in = (kfr_f64 *)kfr_allocate(2 * n * sizeof(kfr_f64));
-    // out = (kfr_c64 *)kfr_allocate(2 * n * sizeof(kfr_c64));
-    in = (kfr_f64 *)calloc(n, sizeof(kfr_f64));
-    out = (kfr_c64 *)calloc(n/2+1, sizeof(kfr_c64));
+    in = (kfr_f64 *)kfr_allocate(n * sizeof(kfr_f64));
+    out = (kfr_c64 *)kfr_allocate((n/2+1) * sizeof(kfr_c64));
 
     for (i = 0; i < n; i++){
         in[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1;
     }
     /* create plan */
-    KFR_DFT_REAL_PLAN_F64* p64 = kfr_dft_real_create_plan_f64(n, CCs);
+    KFR_DFT_REAL_PLAN_F64* p64 = kfr_dft_real_create_plan_f64(n, Perm);
 
-    kfr_dft_real_dump_f64(p64); 
+    // kfr_dft_real_dump_f64(p64); 
 
     temp_size = kfr_dft_real_get_temp_size_f64(p64);
 
@@ -104,19 +102,18 @@ void DiscreteFourierTransformKFRr(int n){ /* real transformation */
         m[i] = sqrt(pow(creal(out[i]), 2) + pow(cimag(out[i]), 2));
     }
     m[0] = creal(out[0]);
+    m[n/2] = cimag(out[0]);
 
 #ifdef P_VALUE
     double p_value;
     p_value = get_pvalue(n, m);
     printf("KFR: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    pv2 = p_value;
 #endif
 
     /* free */
     kfr_dft_real_delete_plan_f64(p64);
-
     free(m);
-    // kfr_deallocate(in);
-    // kfr_deallocate(out);
-    free(in);
-    free(out);
+    kfr_deallocate(in);
+    kfr_deallocate(out);
 }

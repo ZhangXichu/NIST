@@ -21,7 +21,7 @@
 #else
     #define	DiscreteFourierTransform_v1 DiscreteFourierTransform4
 #endif
-#define	DiscreteFourierTransform_v2 DiscreteFourierTransform //2,3,4
+#define	DiscreteFourierTransform_v2 DiscreteFourierTransformFFTW_i //2,3,4
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
 #define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4 //2,4
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings
@@ -100,6 +100,11 @@ void    NonOverlappingTemplateMatchings4(int m, int n);
 
 
 /* Other FFTs */
+void DiscreteFourierTransformFFTWm(int n); /* FFTW multithread version */
+void DiscreteFourierTransformFFTWmr(int n);
+void DiscreteFourierTransformFFTW_i(int n); /* in-place transform */
+void DiscreteFourierTransformFFTWr_i(int n); /* in-place transform */
+
 void DiscreteFourierTransformFFTS(int n); /* all sizes */
 void DiscreteFourierTransformFFTSr(int n); /* real FFT */ /* all sizes */
 
@@ -117,6 +122,8 @@ void DiscreteFourierTransformGSLr(int n); /* real FFT */ /* all sizes */
 
 void DiscreteFourierTransformMKL(int n); /* doesn't work for small factors */
 void DiscreteFourierTransformMKLr(int n); /* real FFT */ /* supports only pow2 */
+void DiscreteFourierTransformMKL_i(int n); /* in-place */
+void DiscreteFourierTransformMKLr_i(int n);
 
 void DiscreteFourierTransformFFTSS(int n); /* supports only pow2 */
 

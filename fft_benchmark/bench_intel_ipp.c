@@ -11,9 +11,10 @@
 #include "../include/stat_fncs.h"
 
 #include "../include/ipp/ipps.h"
+#include "../include/ipp/ippcore.h"
 #include "statistics.h"
 
-void DiscreteFourierTransformIPP(int n){
+void DiscreteFourierTransformIPP(int n){  /* out-of-place (no in-place impl for DFT) */
 
     int i;
     int sizeSpec, sizeInitBuf, sizeWorkBuf;
@@ -27,6 +28,9 @@ void DiscreteFourierTransformIPP(int n){
     
     in = ippsMalloc_64fc(n);
     out = ippsMalloc_64fc(n); 
+
+    /* set number of threads */
+    // status = ippSetNumThreads(6);
 
     status = ippsDFTGetSize_C_64fc(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
 
@@ -46,6 +50,7 @@ void DiscreteFourierTransformIPP(int n){
         in[i].im = 0.0;
     }
 
+    /* the DFT functions are alternative of the legacy ippGEN functions */
     /* initialization */
     status = ippsDFTInit_C_64fc(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, spec, initBuf); /* temp work buffer not used */
 
@@ -72,7 +77,8 @@ void DiscreteFourierTransformIPP(int n){
     free(m);
 }
 
-void DiscreteFourierTransformIPPr(int n){
+
+void DiscreteFourierTransformIPPr(int n){  /* out-of-place */
 
     int i;
     int sizeSpec=0, sizeInitBuf=0, sizeWorkBuf=0;
@@ -101,6 +107,11 @@ void DiscreteFourierTransformIPPr(int n){
 
     /* initialization */
     status = ippsDFTInit_R_64f(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, spec, initBuf); /* temp work buffer not used */
+
+    /* set number of threads */
+    // int numThreads;
+    // status = ippSetNumThreads(6);
+    // status = ippGetNumThreads(&numThreads);
 
     /* transformation */
     status = ippsDFTFwd_RToPerm_64f(in, out, spec, workBuf);

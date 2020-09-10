@@ -16,7 +16,7 @@
 typedef double _Complex mkl_cpx64; /* use double precision */
 typedef double mkl_r64;
 
-void DiscreteFourierTransformMKL(int n){
+void DiscreteFourierTransformMKL(int n){ /* out-of-place */
     int i;
     mkl_cpx64 *in;
     mkl_cpx64 *out;
@@ -72,6 +72,57 @@ void DiscreteFourierTransformMKL(int n){
 }
 
 
+void DiscreteFourierTransformMKL_i(int n){ /* in-place */
+    int i;
+    mkl_cpx64 *inOut;
+    MKL_LONG status;
+    double *m;
+
+    if (((inOut = (mkl_cpx64 *)calloc(n, sizeof(mkl_cpx64))) == NULL) ||
+		((m = (double*)calloc(n, sizeof(double))) == NULL)) {
+		printf("\t\tUnable to allocate working arrays for the DFT.\n");
+		if (inOut != NULL)
+			free(inOut);
+		if (m != NULL)
+			free(m);
+		return;
+	}
+
+    for (i = 0; i < n; i++){
+        inOut[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1;
+    }
+
+    DFTI_DESCRIPTOR_HANDLE desc_handle = NULL;
+
+    status = DftiCreateDescriptor(&desc_handle, DFTI_DOUBLE, DFTI_COMPLEX, 1, n);
+    status = DftiSetValue(desc_handle, DFTI_PLACEMENT, DFTI_INPLACE);
+    status = DftiCommitDescriptor(desc_handle);
+    status = DftiComputeForward(desc_handle, inOut);
+    status = DftiFreeDescriptor(&desc_handle);
+
+#ifdef DEBUG
+    printf("Output of DFT \n");
+    for (i = 0; i < n; i++){
+        printf("%0.2f %0.2fi", creal(inOut[i]), cimag(inOut[i]));
+    }
+    printf("\n");
+#endif
+
+    for (i = 0; i < n; i++){
+        m[i] = sqrt(pow(creal(inOut[i]), 2) + pow(cimag(inOut[i]), 2));
+    }
+
+#ifdef P_VALUE
+    double p_value;
+    p_value = get_pvalue(n, m);
+    printf("MKL in-place: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    pv2 = p_value;
+#endif
+
+    free(inOut);
+}
+
+
 void DiscreteFourierTransformMKLr(int n){
     int i;
     // mkl_cpx64 *in;
@@ -120,10 +171,67 @@ void DiscreteFourierTransformMKLr(int n){
 #ifdef P_VALUE
     double p_value;
     p_value = get_pvalue(n, m);
-    printf("MKL: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    printf("MKL real: p_value: %lf \n",p_value); /* use p-value to verify the result */
     pv2 = p_value;
 #endif
 
     free(in);
     free(out);
+}
+
+
+void DiscreteFourierTransformMKLr_i(int n){ /* in-place, result stored in CCS format */
+    int i;
+    mkl_r64 *inOut;
+    MKL_LONG status;
+    double *m;
+
+    if (((inOut = (double *)calloc(n+2, sizeof(double))) == NULL) ||
+		((m = (double*)calloc(n/2+1, sizeof(double))) == NULL)) {
+		printf("\t\tUnable to allocate working arrays for the DFT.\n");
+		if (inOut != NULL)
+			free(inOut);
+		if (m != NULL)
+			free(m);
+		return;
+	}
+
+    for (i = 0; i < n; i++){
+        inOut[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1; 
+    }
+
+    DFTI_DESCRIPTOR_HANDLE desc_handle = NULL;
+
+    status = DftiCreateDescriptor(&desc_handle, DFTI_DOUBLE, DFTI_REAL, 1, n);
+    status = DftiSetValue(desc_handle, DFTI_PLACEMENT, DFTI_INPLACE);
+    status = DftiCommitDescriptor(desc_handle);
+    status = DftiComputeForward(desc_handle, inOut);
+    status = DftiFreeDescriptor(&desc_handle);
+
+#ifdef DEBUG
+    printf("Output of DFT \n");
+    for (i = 0; i < n/2+1; i++){
+        printf("%0.2f %0.2fi", inOut[2*i], inOut[2*i+1]);
+    }
+    printf("\n");
+#endif
+    printf("Output of DFT \n");
+    for (i = 0; i < n/2+1; i++){
+        printf("%0.2f %0.2fi", inOut[2*i], inOut[2*i+1]);
+    }
+    printf("\n");
+
+    for (i = 0; i < n/2+1; i++){
+        m[i] = sqrt(pow(inOut[2*i], 2) + pow(inOut[2*i+1], 2));
+    }
+
+#ifdef P_VALUE
+    double p_value;
+    p_value = get_pvalue(n, m);
+    printf("MKL real: p_value: %lf \n",p_value); /* use p-value to verify the result */
+    pv2 = p_value;
+#endif
+
+    free(inOut);
+    free(m);
 }

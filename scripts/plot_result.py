@@ -3,40 +3,66 @@ import matplotlib
 import matplotlib.pyplot as plt
 from math import log2
 
+# basic test data
 x_pow2 = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
 x_sf = [6, 10, 15, 20, 35, 63, 175, 270, 675, 945, 2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750]
 x_pr = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771, 65537,131071, 262139]
 
-config_a = [('black', '.', '-'), ('black', '*', '--'), ('black', 'o', '-'), ('blue', '.', '-'), ('g', '.', '-'), ('magenta', '.', '-'),
-    ('orange', '.', '-'), ('purple', 'o', '-'), ('goldenrod', '*', '-'), ('red', 'x', '-')]
+# extended test data
+x_pow2_e = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864]
+x_sf_e = [2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750, 1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
+x_pr_e = [2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
 
-config_fftw_mt = [('black', '.', '-'), ('black', '*', '--'), ('black', 'o', '-')]
+config_a = [('black', '.', '-'), ('black', '*', '--'), ('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
+    ('midnightblue', '.', '--'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('red', '.', '-')]
+
+config_fftw_mt = [('black', '.', '-'), ('black', 'o', '--'), ('black', '+', ':'), ('dimgrey', '1', '-.')]
+
+config_e = [('blue', '.', '-'), ('magenta', '.', '-'), ('black', '.', '-'), ('magenta', '*', '--'), ('black', '*', '--')]
 
 def parse_file(in_file_name):
     in_file = open(in_file_name, "r")
     lines = in_file.readlines()
     indices = []
     results = []
+    num_values = 0
     for s in lines:
         # format [n] [time]
         tokens = s.split()
         indices.append(int(tokens[0]))
         results.append(int(tokens[1]))
-    return indices, results
+        num_values += 1
+    return indices, results, num_values
 
 
-def get_flop(y, cpx):
+def get_flop(y, cpx, x_labels, num_values):
     if cpx:
         k = 5
     else:
         k = 2.5
-    for i in range(len(x_pow2)):
+    for i in range(num_values):
         if y[i] != 0:
-            y[i] = k * x_pow2[i] * log2(x_pow2[i]) / y[i]
+            y[i] = k * x_labels[i] * log2(x_labels[i]) / y[i]
 
 
-def graph(lst_data, cpx=True, config=config_a, name_f=""):
-    x = [i for i in range(1, len(x_pow2)+1)]
+def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended="False"):
+    if extended:
+        if type == "pow2":
+            x_labels = x_pow2_e
+        elif type == "small_factor":
+            x_labels = x_sf_e
+        else:  # prime
+            x_labels = x_pr_e
+    else:
+        if type == "pow2":
+            x_labels = x_pow2
+        elif type == "small_factor":
+            x_labels = x_sf
+        else:  # prime
+            x_labels = x_pr
+
+    counter = 0
+    num_values = len(x_labels)
 
     fig, ax = plt.subplots()
     fig.tight_layout()
@@ -46,65 +72,239 @@ def graph(lst_data, cpx=True, config=config_a, name_f=""):
     plt.ylabel("speed(mflops)", fontsize=12)
     plt.xlabel("size", fontsize=12)
 
-    counter = 0
-    for name, y in lst_data:
+    for name, y, num_values in lst_data:
+        x = [i for i in range(1, num_values+1)]
         co = config[counter][0]
         ma = config[counter][1]
         li = config[counter][2]
-        get_flop(y, cpx)
+        get_flop(y, cpx, x_labels, num_values)
         ax.plot(x, y, color=co, label=name, marker=ma, linestyle=li, fillstyle='none')
         counter = counter + 1
     ax.legend()
 
-    labels = [i for i in x_pow2]
+    labels = [i for i in x_labels]
     plt.xticks(x, labels, rotation='vertical')
 
     plt.savefig("../fft_results/plots/" + name_f, bbox_inches='tight')
     plt.show()
 
 
+def plot_summary(type="pow2", cpx=True):
+    if cpx:
+        tr = "cpx"
+    else:
+        tr = "real"
+
+    lst_data = []
+
+    fftw = "../fft_results/{0}/fftw_{1}_frt.txt".format(type, tr)
+    ffts = "../fft_results/{0}/ffts_{1}_frt.txt".format(type, tr)
+    fftss = "../fft_results/{0}/fftss_{1}_frt.txt".format(type, tr)
+    ipp = "../fft_results/{0}/ipp_{1}_frt.txt".format(type, tr)
+    gsl = "../fft_results/{0}/gsl_{1}_frt.txt".format(type, tr)
+    pocket = "../fft_results/{0}/pocket_{1}_frt.txt".format(type, tr)
+    kfr = "../fft_results/{0}/kfr_{1}_frt.txt".format(type, tr)
+    mkl = "../fft_results/{0}/mkl_{1}_frt.txt".format(type, tr)
+    original = "../fft_results/{0}/original_frt.txt".format(type)
+
+    # for testing
+    fictive = "../fft_results/small_factor/fictive.txt"
+
+    res_fftw = parse_file(fftw)
+    lst_data.append(("FFTW", res_fftw[1], res_fftw[2]))
+    res_original = parse_file(original)
+    lst_data.append(("Original", res_original[1], res_original[2]))
+    res_fictive = parse_file(fictive)
+    lst_data.append(("fictive", res_fictive[1], res_fictive[2]))
+    res_ipp = parse_file(ipp)
+    lst_data.append(("Intel-IPP", res_ipp[1], res_ipp[2]))
+    res_gsl = parse_file(gsl)
+    lst_data.append(("GSL mixed radix", res_gsl[1], res_gsl[2]))
+    res_pocket = parse_file(pocket)
+    lst_data.append(("PocketFFT", res_pocket[1], res_pocket[2]))
+    res_mkl = parse_file(mkl)
+    lst_data.append(("Intel-MKL", res_mkl[1], res_mkl[2]))
+
+    if cpx:
+        res_ffts = parse_file(ffts)
+        lst_data.append(("FFTS", res_ffts[1], res_ffts[2]))
+
+    if type == "pow2":
+        if cpx:
+            res_fftss = parse_file(fftss)
+            lst_data.append(("FFTSS", res_fftss[1], res_fftss[2]))
+        res_kfr = parse_file(kfr)
+        lst_data.append(("KFR", res_kfr[1], res_kfr[2]))
+
+    
+    graph(lst_data, name_f="summary_{0}_{1}.pdf".format(tr, type), type=type)
+
+
 def plot_summary_cpx_pow2():
-    fftw_cpx = "../fft_results/pow2/fftw_cpx_frt.txt"
-    ffts_cpx = "../fft_results/pow2/ffts_cpx_frt.txt"
-    fftss_cpx = "../fft_results/pow2/fftss_cpx_frt.txt"
-    ipp_cpx = "../fft_results/pow2/ipp_cpx_frt.txt"
-    gsl_cpx = "../fft_results/pow2/gsl_cpx_frt.txt"
-    pocket_cpx = "../fft_results/pow2/pocket_cpx_frt.txt"
-    kfr_cpx = "../fft_results/pow2/kfr_cpx_frt.txt"
-    mkl_cpx = "../fft_results/pow2/mkl_cpx_frt.txt"
-    original = "../fft_results/pow2/original_frt.txt"
+    plot_summary()
+
+
+def plot_summary_cpx_small_factor():
+    plot_summary(type="small_factor")
+
+
+def plot_summary_cpx_prime():
+    plot_summary(type="prime")
+
+
+def plot_summary_real_pow2():
+    plot_summary(cpx=False)
+
+
+def plot_summary_real_small_factor():
+    plot_summary(type="small_factor", cpx=False)
+
+
+def plot_summary_real_prime():
+    plot_summary(type="prime", cpx=False)
+
+
+def plot_fftw_mt(factor="", type="pow2", cpx=True):
+    if cpx:
+        tr = "cpx"
+    else:
+        tr = "real"
+
+    fftw_cpx = "../fft_results/{0}/fftw_{1}_frt.txt".format(factor, tr)
+    fftw_mt_2_cpx = "../fft_results/{0}/fftw_mt_2_{1}_frt.txt".format(factor, tr)
+    fftw_mt_4_cpx = "../fft_results/{0}/fftw_mt_4_{1}_frt.txt".format(factor, tr)
+    fftw_mt_6_cpx = "../fft_results/{0}/fftw_mt_6_{1}_frt.txt".format(factor, tr)
+
+    lst_data = []
+    
+    res_fftw_cpx = parse_file(fftw_cpx)
+    lst_data.append(("1 thread", res_fftw_cpx[1], res_fftw_cpx[2]))
+    res_fftw_mt_2_cpx = parse_file(fftw_mt_2_cpx)
+    lst_data.append(("2 threads", res_fftw_mt_2_cpx[1], res_fftw_mt_2_cpx[2]))
+    res_fftw_mt_4_cpx = parse_file(fftw_mt_4_cpx)
+    lst_data.append(("4 threads", res_fftw_mt_4_cpx[1], res_fftw_mt_4_cpx[2]))
+    res_fftw_mt_6_cpx = parse_file(fftw_mt_6_cpx)
+    lst_data.append(("6 threads", res_fftw_mt_6_cpx[1], res_fftw_mt_6_cpx[2]))
+
+    graph(lst_data, config=config_fftw_mt, name_f="{0}/plot_fftw_mt_{1}.pdf".format(factor, tr), type=type)
+
+
+def plot_fftw_mt_cpx_pow2():
+    plot_fftw_mt("pow2", type="pow2")
+
+
+def plot_fftw_mt_cpx_small_factor():
+    plot_fftw_mt("small_factor", type="small_factor")
+
+
+def plot_fftw_mt_cpx_prime():
+    plot_fftw_mt("prime", type="prime")
+
+
+def plot_fftw_mt_real_pow2():
+    plot_fftw_mt("pow2", type="pow2", cpx=False)
+
+
+def plot_fftw_mt_real_small_factor():
+    plot_fftw_mt("small_factor", type="small_factor", cpx=False)
+
+
+def plot_fftw_mt_real_prime():
+    plot_fftw_mt("prime", type="prime", cpx=False)
+
+
+def plot_extended(type="pow2", cpx=True):
+    if cpx:
+        tr = "cpx"
+    else:
+        tr = "real"
 
     lst_data = []
 
-    lst_data.append(("FFTS", parse_file(ffts_cpx)[1]))
-    lst_data.append(("FFTSS", parse_file(fftss_cpx)[1]))
-    lst_data.append(("FFTW", parse_file(fftw_cpx)[1]))
-    lst_data.append(("Intel-IPP", parse_file(ipp_cpx)[1]))
-    lst_data.append(("GSL mixed radix", parse_file(gsl_cpx)[1]))
-    lst_data.append(("PocketFFT", parse_file(pocket_cpx)[1]))
-    lst_data.append(("KFR", parse_file(kfr_cpx)[1]))
-    lst_data.append(("Intel-MKL", parse_file(mkl_cpx)[1]))
-    lst_data.append(("Original", parse_file(original)[1]))
+    # out-of-place
+    ipp = "../fft_results/{0}/ipp_{1}_e_frt.txt".format(type, tr)
+    mkl = "../fft_results/{0}/mkl_{1}_e_frt.txt".format(type, tr)
+    fftw = "../fft_results/{0}/fftw_{1}_e_frt.txt".format(type, tr)
 
-    graph(lst_data)
+    res_ipp = parse_file(ipp)
+    lst_data.append(("Intel-IPP", res_ipp[1], res_ipp[2]))
+    res_mkl = parse_file(mkl)
+    lst_data.append(("Intel-MKL", res_mkl[1], res_mkl[2]))
+    res_fftw = parse_file(fftw)
+    lst_data.append(("FFTW", res_fftw[1], res_fftw[2]))
 
-def plot_fftw_mt_pow2():
-    fftw_mt_2_cpx = "../fft_results/pow2/fftw_mt_2_cpx_frt.txt"
-    fftw_mt_4_cpx = "../fft_results/pow2/fftw_mt_4_cpx_frt.txt"
-    fftw_mt_6_cpx = "../fft_results/pow2/fftw_mt_6_cpx_frt.txt"
+    # in-place
+    mkl_i = "../fft_results/{0}/mkl_{1}_e_i_frt.txt".format(type, tr)
+    fftw_i = "../fft_results/{0}/fftw_{1}_e_i_frt.txt".format(type, tr)
 
-    lst_data = []
+    res_mkl_i = parse_file(mkl_i)
+    lst_data.append(("Intel-MKL in-place", res_mkl_i[1], res_mkl_i[2]))
+    res_fftw_i = parse_file(fftw_i)
+    lst_data.append(("FFTW in-place", res_fftw_i[1], res_fftw_i[2]))
 
-    lst_data.append(("2 threads", parse_file(fftw_mt_2_cpx)[1]))
-    lst_data.append(("4 threads", parse_file(fftw_mt_4_cpx)[1]))
-    lst_data.append(("6 threads", parse_file(fftw_mt_6_cpx)[1]))
+    graph(lst_data, config=config_e, name_f="summary_{0}_{1}_e.pdf".format(tr, type), type=type)
 
-    graph(lst_data, config=config_fftw_mt, name_f="plot_fftw_mt_pow2.pdf")
+
+def plot_extended_cpx_pow2():
+    plot_extended()
+
+
+def plot_extended_cpx_small_factor():
+    plot_extended(type="small_factor")
+
+
+def plot_extended_cpx_prime():
+    plot_extended(type="prime")
+
+
+def plot_extended_real_pow2():
+    plot_extended(cpx=False)
+
+
+def plot_extended_real_small_factor():
+    plot_extended(cpx=False, type="small_factor")
+
+
+def plot_extended_real_prime():
+    plot_extended(cpx=False, type="prime")
 
 
 def main():
+    ##################################
+    #### Summary #####################
+    ##################################
+
     # plot_summary_cpx_pow2()
-    plot_fftw_mt_pow2()
+    # plot_summary_cpx_small_factor()
+    # plot_summary_cpx_prime()
+
+    # plot_summary_real_pow2()
+    # plot_summary_real_small_factor()
+    # plot_summary_real_prime()
+
+    ##################################
+    #### FFTW multi thread version ###
+    ##################################
+
+    # plot_fftw_mt_cpx_pow2()
+    # plot_fftw_mt_cpx_small_factor()
+    # plot_fftw_mt_cpx_prime()
+
+    # plot_fftw_mt_real_pow2()
+    # plot_fftw_mt_real_small_factor()
+    # plot_fftw_mt_real_prime()
+
+    ##################################
+    ##########  Placement  ###########
+    ##################################
+
+    plot_extended_cpx_pow2()
+    plot_extended_cpx_small_factor()
+    plot_extended_cpx_prime()
+
+    # plot_extended_real_pow2()
+    # plot_extended_real_small_factor()
+    # plot_extended_real_prime()
     
 
 if __name__ == '__main__':

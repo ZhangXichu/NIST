@@ -58,8 +58,11 @@ void DiscreteFourierTransformFFTS(int n)
 	}
 
 	/* statistical data */
+#ifdef P_VALUE
 	p_value = get_pvalue(n, m);
 	printf("DFT FFTS: p_value: %lf \n",p_value); /* use p-value to verify the result */
+	pv2 = p_value;
+#endif
 
 	free(in);
 	free(out);
@@ -109,8 +112,10 @@ void DiscreteFourierTransformFFTSr(int n) /* real transformation */
 	}
 
 	/* statistical data */
+#ifdef P_VALUE
 	p_value = get_pvalue(n, m);
 	printf("DFT FFTS: p_value: %lf \n",p_value); /* use p-value to verify the result */
+#endif
 
 	free(in);
 	free(out);

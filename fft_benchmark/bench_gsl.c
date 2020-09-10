@@ -19,7 +19,7 @@
 #define REAL(z,i) ((z)[2*(i)])
 #define IMAG(z,i) ((z)[2*(i)+1])
 
-void DiscreteFourierTransformGSL(int n){
+void DiscreteFourierTransformGSL(int n){ /* in-place */
     int i;
     double *in, *m;
     double p_value;

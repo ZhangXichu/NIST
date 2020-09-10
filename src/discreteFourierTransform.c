@@ -271,7 +271,7 @@ DiscreteFourierTransform3(int n) /* complex transformation */
 		return;
 	}
 
-	p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+	p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);   
 
 	for (i = 0; i<n; i++)
 	{
@@ -302,6 +302,7 @@ DiscreteFourierTransform3(int n) /* complex transformation */
 #ifdef P_VALUE
 	printf("FFTW cpx p_value: %lf \n ",p_value);
 	pv1 = p_value;
+	pv2 = p_value;
 #endif
 
 #ifdef SPEED
@@ -420,8 +421,9 @@ DiscreteFourierTransform4(int n) /* real FFT */
 	p_value = erfc(fabs(d) / sqrt(2.0));
 
 #ifdef P_VALUE
-	printf("FFTW real p_value: %lf \n ",p_value);
+	printf("FFTW real p_value: %lf \n",p_value);
 	pv1 = p_value;
+	pv2 = p_value;
 #endif
 
 

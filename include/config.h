@@ -11,15 +11,15 @@ extern "C" {
 #define	_CONFIG_H_
 
 // New defines
-// #define VERIFY_RESULTS 1
+#define VERIFY_RESULTS 1
 // #define SPEED 1
-// #define FILE_OUTPUT 1
-// #define KS 1
+#define FILE_OUTPUT 1
+#define KS 1
 
 // #define COLLECT_DATA_DFT 1
+#define P_VALUE 1
 #define BENCHMARK 1
-// #define P_VALUE 1
-// #define DEBUG 1
+// #define DEBUG 1    
 
 // Original stuff
 

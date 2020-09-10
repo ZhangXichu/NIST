@@ -1,6 +1,7 @@
 CC = gcc  #clang
 OFF = -Wno-unused-variable -Wno-unused-but-set-variable -Wno-misleading-indentation
-GCCFLAGS = -c -g -Wall $(OFF)
+MACRO =
+GCCFLAGS = -c -g -Wall -std=c99 -D_POSIX_C_SOURCE=199309L $(MACRO) $(OFF)
 ROOTDIR = .
 SRCDIR = $(ROOTDIR)/src
 BENCHDIR = $(ROOTDIR)/fft_benchmark
@@ -25,13 +26,15 @@ OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/BMA.o $(OBJDIR)/BM.o $(OBJDIR)/LUTs.o $(OBJDIR)/main.o  $(OBJDIR)/tools.o \
 	  $(OBJDIR)/benchmark.o $(OBJDIR)/timer.o $(OBJDIR)/statistics.o $(OBJDIR)/bench_ffts.o \
 	  $(OBJDIR)/bench_kfr.o $(OBJDIR)/bench_intel_mkl.o $(OBJDIR)/bench_intel_ipp.o \
-	  $(OBJDIR)/pocketfft.o $(OBJDIR)/bench_pocket.o $(OBJDIR)/bench_gsl.o $(OBJDIR)/bench_fftss.o
+	  $(OBJDIR)/pocketfft.o $(OBJDIR)/bench_pocket.o $(OBJDIR)/bench_gsl.o $(OBJDIR)/bench_fftss.o \
+	  $(OBJDIR)/bench_fftwm.o
 
 assess: $(OBJ)  # -Wl,--verbose
-	$(CC) -o $@ $(OBJ) -m64 -lm -L./libs -lffts -lfftw3 -lkfr_capi \
+	$(CC) -o $@ $(OBJ) -m64 -lm -L./libs -lffts -lfftw3  -lfftw3_threads -lkfr_capi \
 	-lgsl -lgslcblas \
+	-L./libs/kfr -lkfr_capi_avx_pic -lkfr_capi_avx2_pic -lkfr_capi_avx512_pic -lkfr_capi_sse2_pic -lkfr_capi_sse41_pic \
 	-L./libs/intel_mkl -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 \
-	-L./libs/intel_ipp -lippcore -lippvm -lipps \
+	-L./libs/intel_ipp/threaded -lippcore -lippvm -lipps \
 	-L./libs/fftss -lfftss \
 	-lpthread -ldl 
 
@@ -153,6 +156,9 @@ $(OBJDIR)/bench_gsl.o: $(BENCHDIR)/bench_gsl.c stat_fncs.h config.h externs.h
 
 $(OBJDIR)/bench_fftss.o: $(BENCHDIR)/bench_fftss.c stat_fncs.h config.h externs.h
 	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftss.c
+
+$(OBJDIR)/bench_fftwm.o: $(BENCHDIR)/bench_fftwm.c stat_fncs.h config.h externs.h
+	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftwm.c
 
 clean:
 	rm -f assess $(OBJDIR)/*.o

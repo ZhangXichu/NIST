@@ -3,6 +3,7 @@
 
 #include <time.h>
 #include <math.h>
+
 #include "../include/config.h"
 
 #ifdef P_VALUE

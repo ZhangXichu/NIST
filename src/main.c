@@ -2090,7 +2090,7 @@ main(int argc, char **argv)
 
 // #define POW2 1  /* case: N = 2^k */
 // #define SMALL_FACTOR 1  /* case: N = 2^a 3^b 5^c 7^d */
-#define PRIME 1 /* case: N is prime */
+// #define PRIME 1 /* case: N is prime */
 
 // #define TEST1
 #define TEST2
@@ -2099,7 +2099,8 @@ int main(){
 	/* Test 1 */
 #ifdef TEST1
 	int n;
-	n = 256; //n = 311; // 64th prime number
+	n = 64;
+	// n = 64; 
 	data_prandom(n);
 
 	DiscreteFourierTransform_v2(n);
@@ -2112,17 +2113,17 @@ int main(){
 	int size_n;
 	int *data;
 #ifdef POW2
-	char *filename = "fft_results/pow2/original_cpx.txt"; /* change accordingly */
-	size_n = SIZE_P2;
-	data = power2;
+	char *filename = "fft_results/pow2/mkl_cpx_i.txt"; /* change accordingly */
+	size_n = SIZE_P2_E;
+	data = power2_e;
 #elif SMALL_FACTOR
-	char *filename = "fft_results/small_factor/original_cpx.txt"; /* change accordingly */
-	size_n = SIZE_SM;
-	data = small_factors;
+	char *filename = "fft_results/small_factor/mkl_cpx_in.txt"; /* change accordingly */
+	size_n = SIZE_SM_E;
+	data = small_factors_e;
 #elif PRIME
-	char *filename = "fft_results/prime/original_cpx.txt"; /* change accordingly */
-	size_n = SIZE_PR;
-	data = primes;
+	char *filename = "fft_results/prime/mkl_cpx_in.txt"; /* change accordingly */
+	size_n = SIZE_PR_E;
+	data = primes_e;
 #endif
 	printf("output: %s\n", filename);
 	// erase the content in the previous file

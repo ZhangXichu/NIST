@@ -31,7 +31,7 @@ void DiscreteFourierTransformPocket(int n){ /* in-place transformation */
     p = make_cfft_plan(n);
 
     for (i = 0; i < n; i++){
-        data[2*i] = 2 * epsilon[i] - 1;
+        data[2*i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1;
         data[2*i+1] = 0;
     }
     status = cfft_forward(p, data, 1); 

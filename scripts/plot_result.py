@@ -13,12 +13,22 @@ x_pow2_e = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 10485
 x_sf_e = [2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750, 1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
 x_pr_e = [2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
 
+# whole set of test data
+x_pow2_w = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864]
+x_sf_w = [6, 10, 15, 20, 35, 63, 175, 270, 675, 945, 2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750, 1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
+x_pr_w = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
+
 config_a = [('black', '.', '-'), ('black', '*', '--'), ('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
     ('midnightblue', '.', '--'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('red', '.', '-')]
 
 config_fftw_mt = [('black', '.', '-'), ('black', 'o', '--'), ('black', '+', ':'), ('dimgrey', '1', '-.')]
 
 config_e = [('blue', '.', '-'), ('magenta', '.', '-'), ('black', '.', '-'), ('magenta', '*', '--'), ('black', '*', '--')]
+
+# plot MKL first
+config_param = [('magenta', '.', '-'), ('magenta', '*', '--'), ('blue', '.', '-'), ('blue', 'o', '--'), ('blue', '*', '-.')]
+# plot IPP first
+config_param2 = [('blue', '.', '-'), ('blue', 'o', '--'), ('blue', '*', '-.'), ('magenta', '.', '-'), ('magenta', '*', '--')]
 
 def parse_file(in_file_name):
     in_file = open(in_file_name, "r")
@@ -45,7 +55,7 @@ def get_flop(y, cpx, x_labels, num_values):
             y[i] = k * x_labels[i] * log2(x_labels[i]) / y[i]
 
 
-def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended="False"):
+def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=False, whole=False):
     if extended:
         if type == "pow2":
             x_labels = x_pow2_e
@@ -53,6 +63,13 @@ def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=
             x_labels = x_sf_e
         else:  # prime
             x_labels = x_pr_e
+    elif whole:
+        if type == "pow2":
+            x_labels = x_pow2_w
+        elif type == "small_factor":
+            x_labels = x_sf_w
+        else:  # prime
+            x_labels = x_pr_w
     else:
         if type == "pow2":
             x_labels = x_pow2
@@ -269,6 +286,84 @@ def plot_extended_real_prime():
     plot_extended(cpx=False, type="prime")
 
 
+# IPP, MKL, FFTW with different params
+def plot_params(type="pow2", cpx=True):
+    if cpx:
+        tr = "cpx"
+    else:
+        tr = "real"
+
+    lst_data = []
+
+    ipp_none = "../fft_results/{0}/ipp_{1}_none_frt.txt".format(type, tr)
+    ipp_fast = "../fft_results/{0}/ipp_{1}_fast_frt.txt".format(type, tr)
+    ipp_accurate = "../fft_results/{0}/ipp_{1}_accurate_frt.txt".format(type, tr)
+
+    mkl_allow = "../fft_results/{0}/mkl_{1}_allow_frt.txt".format(type, tr)
+    mkl_avoid = "../fft_results/{0}/mkl_{1}_avoid_frt.txt".format(type, tr)
+
+    if tr == "real":
+        res_mkl_allow = parse_file(mkl_allow)
+        lst_data.append(("MKL-allow", res_mkl_allow[1], res_mkl_allow[2]))
+
+        res_mkl_avoid = parse_file(mkl_avoid)
+        lst_data.append(("MKL-avoid", res_mkl_avoid[1], res_mkl_avoid[2]))
+
+        res_ipp_none = parse_file(ipp_none)
+        lst_data.append(("IPP-none", res_ipp_none[1], res_ipp_none[2]))
+
+        res_ipp_fast = parse_file(ipp_fast)
+        lst_data.append(("IPP-fast", res_ipp_fast[1], res_ipp_fast[2]))
+
+        res_ipp_accurate = parse_file(ipp_accurate)
+        lst_data.append(("IPP-accurate", res_ipp_accurate[1], res_ipp_accurate[2]))
+
+        graph(lst_data, config=config_param, name_f="summary_{0}_{1}_params.pdf".format(tr, type), type=type, whole=True)
+    else:
+        res_ipp_none = parse_file(ipp_none)
+        lst_data.append(("IPP-none", res_ipp_none[1], res_ipp_none[2]))
+
+        res_ipp_fast = parse_file(ipp_fast)
+        lst_data.append(("IPP-fast", res_ipp_fast[1], res_ipp_fast[2]))
+
+        res_ipp_accurate = parse_file(ipp_accurate)
+        lst_data.append(("IPP-accurate", res_ipp_accurate[1], res_ipp_accurate[2]))
+
+        res_mkl_allow = parse_file(mkl_allow)
+        lst_data.append(("MKL-allow", res_mkl_allow[1], res_mkl_allow[2]))
+
+        res_mkl_avoid = parse_file(mkl_avoid)
+        lst_data.append(("MKL-avoid", res_mkl_avoid[1], res_mkl_avoid[2]))
+
+        graph(lst_data, config=config_param2, name_f="summary_{0}_{1}_params.pdf".format(tr, type), type=type, whole=True)
+
+
+def plot_params_cpx_pow2():
+    plot_params()
+
+
+def plot_params_cpx_small_factor():
+    plot_params(type="small_factor")
+
+
+def plot_params_cpx_prime():
+    plot_params(type="prime")
+
+
+def plot_params_real_pow2():
+    plot_params()
+
+
+def plot_params_real_small_factor():
+    plot_params(type="small_factor", cpx=False)
+
+
+def plot_params_real_prime():
+    plot_params(type="prime", cpx=False)
+
+
+
+
 def main():
     ##################################
     #### Summary #####################
@@ -298,14 +393,25 @@ def main():
     ##########  Placement  ###########
     ##################################
 
-    plot_extended_cpx_pow2()
-    plot_extended_cpx_small_factor()
-    plot_extended_cpx_prime()
+    # plot_extended_cpx_pow2()
+    # plot_extended_cpx_small_factor()
+    # plot_extended_cpx_prime()
 
     # plot_extended_real_pow2()
     # plot_extended_real_small_factor()
     # plot_extended_real_prime()
-    
+
+    ##################################
+    #####  Different params  #########
+    ##################################
+    plot_params_cpx_pow2()
+    plot_params_cpx_small_factor()
+    plot_params_cpx_prime()
+
+    plot_params_real_pow2()
+    plot_params_real_small_factor()
+    plot_params_real_prime()
+
 
 if __name__ == '__main__':
     main()

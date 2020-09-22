@@ -1,3 +1,5 @@
+ #!/bin/bash
+ 
  # use command |source| to run this script
  # let the linker know where to find the shared libraries
  export LD_LIBRARY_PATH=./libs:./libs/intel_ipp:./libs/intel_mkl

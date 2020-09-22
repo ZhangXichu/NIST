@@ -32,7 +32,10 @@ void DiscreteFourierTransformIPP(int n){  /* out-of-place (no in-place impl for 
     /* set number of threads */
     // status = ippSetNumThreads(6);
 
-    status = ippsDFTGetSize_C_64fc(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
+    int algHint = ippAlgHintNone;
+
+    // ippAlgHintNone, ippAlgHintFast, ippAlgHintAccurate
+    status = ippsDFTGetSize_C_64fc(n, IPP_FFT_DIV_INV_BY_N, algHint, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
 
     /* check size */
     // printf("sizeSpec: %d\n", sizeSpec);
@@ -52,7 +55,8 @@ void DiscreteFourierTransformIPP(int n){  /* out-of-place (no in-place impl for 
 
     /* the DFT functions are alternative of the legacy ippGEN functions */
     /* initialization */
-    status = ippsDFTInit_C_64fc(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, spec, initBuf); /* temp work buffer not used */
+    // ippAlgHintNone, ippAlgHintFast, ippAlgHintAccurate
+    status = ippsDFTInit_C_64fc(n, IPP_FFT_DIV_INV_BY_N, algHint, spec, initBuf); /* temp work buffer not used */
 
     /* transformation */
     status = ippsDFTFwd_CToC_64fc(in, out, spec, workBuf);

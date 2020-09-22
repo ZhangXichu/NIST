@@ -21,7 +21,7 @@
 #else
     #define	DiscreteFourierTransform_v1 DiscreteFourierTransform4
 #endif
-#define	DiscreteFourierTransform_v2 DiscreteFourierTransformFFTW_i //2,3,4
+// #define	DiscreteFourierTransform_v2 DiscreteFourierTransformMKL //2,3,4
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
 #define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4 //2,4
 #define	OverlappingTemplateMatchings_v1 OverlappingTemplateMatchings

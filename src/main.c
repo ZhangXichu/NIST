@@ -2093,9 +2093,15 @@ main(int argc, char **argv)
 // #define PRIME 1 /* case: N is prime */
 
 // #define TEST1
-#define TEST2
+#define TEST2 1
 
-int main(){
+int main(int argc, char **argv){
+	int cut = 0;
+	if (argc < 3) {
+		return -1;
+	}
+	cut = atoi(argv[1]);
+	char* filename = argv[2];
 	/* Test 1 */
 #ifdef TEST1
 	int n;
@@ -2112,24 +2118,32 @@ int main(){
 	int n, i;
 	int size_n;
 	int *data;
+	char filename_buf[120];
+	strcpy(filename_buf, "fft_results/");
 #ifdef POW2
-	char *filename = "fft_results/pow2/mkl_cpx_i.txt"; /* change accordingly */
-	size_n = SIZE_P2_E;
-	data = power2_e;
+    // printf("POW2 %d\n", cut);
+	// char *filename = "fft_results/pow2/mkl_cpx_allow.txt"; /* change accordingly */
+	strcat(filename_buf, filename);
+	size_n = SIZE_P2_W;
+	data = power2_w;
 #elif SMALL_FACTOR
-	char *filename = "fft_results/small_factor/mkl_cpx_in.txt"; /* change accordingly */
-	size_n = SIZE_SM_E;
-	data = small_factors_e;
+    // printf("SMALL_FACTOR %d\n", cut);
+	// char *filename = "fft_results/small_factor/mkl_cpx_allow.txt"; /* change accordingly */
+	strcat(filename_buf, filename);
+	size_n = SIZE_SM_W;
+	data = small_factors_w;
 #elif PRIME
-	char *filename = "fft_results/prime/mkl_cpx_in.txt"; /* change accordingly */
-	size_n = SIZE_PR_E;
-	data = primes_e;
+    // printf("PRIME %d\n", cut);
+	// char *filename = "fft_results/prime/mkl_cpx_allow.txt"; /* change accordingly */
+	strcat(filename_buf, filename);
+	size_n = SIZE_PR_W;
+	data = primes_w;
 #endif
-	printf("output: %s\n", filename);
+	printf("output: %s\n", filename_buf);
 	// erase the content in the previous file
-	FILE *out_data = fopen(filename, "w");
-	FILE *out_file = freopen(filename, "a", out_data);	
-	for (i = 0; i < size_n; i++){
+	FILE *out_data = fopen(filename_buf, "w");
+	FILE *out_file = freopen(filename_buf, "a", out_data);	
+	for (i = 0; i < size_n - cut; i++){
 		n = data[i];
 		data_prandom(n);
 		benchmark(n, out_file);

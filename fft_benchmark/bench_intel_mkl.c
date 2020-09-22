@@ -44,6 +44,9 @@ void DiscreteFourierTransformMKL(int n){ /* out-of-place */
 
     status = DftiCreateDescriptor(&desc_handle, DFTI_DOUBLE, DFTI_COMPLEX, 1, n);
     status = DftiSetValue(desc_handle, DFTI_PLACEMENT, DFTI_NOT_INPLACE);
+#ifdef AVOID
+    status = DftiSetValue(desc_handle, DFTI_WORKSPACE, DFTI_AVOID);
+#endif
     status = DftiCommitDescriptor(desc_handle);
     status = DftiComputeForward(desc_handle, in, out);
     status = DftiFreeDescriptor(&desc_handle);
@@ -152,6 +155,9 @@ void DiscreteFourierTransformMKLr(int n){
 
     status = DftiCreateDescriptor(&desc_handle, DFTI_DOUBLE, DFTI_REAL, 1, n);
     status = DftiSetValue(desc_handle, DFTI_PLACEMENT, DFTI_NOT_INPLACE);
+#ifdef AVOID
+    status = DftiSetValue(desc_handle, DFTI_WORKSPACE, DFTI_AVOID);
+#endif
     status = DftiCommitDescriptor(desc_handle);
     status = DftiComputeForward(desc_handle, in, out);
     status = DftiFreeDescriptor(&desc_handle);

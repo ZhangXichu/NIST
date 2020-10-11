@@ -37,6 +37,8 @@ THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <time.h>
 #include <assert.h>
+#include <unistd.h>
+#include <signal.h>
 #include "../include/externs.h"
 #include "../include/cephes.h"
 #include "../include/utilities.h"
@@ -2094,14 +2096,78 @@ main(int argc, char **argv)
 
 // #define TEST1
 #define TEST2 1
+// #define PRECOMPUTE 1
 
-int main(int argc, char **argv){
-	int cut = 0;
+void sig_handler(int signum){
+ 
+  printf("Time exceeded\n");
+  exit(1);
+}
+
+int main(int argc, char **argv){	
+	
+#ifdef PRECOMPUTE
+	int n, i;
+	int *data;
+	char *filename = "fft_benchmark/p_values_mkl.txt";
+	printf("output: %s\n", filename);
+	FILE *out_data = fopen(filename, "w");
+	FILE *out_file = freopen(filename, "a+", out_data);	
+	
+	fprintf(out_file, "pow2\n");
+	for (i = 0; i < SIZE_W; i++){
+		n = power2_w[i];
+		data_prandom(n);
+		DiscreteFourierTransform_v1(n);
+	#ifdef P_VALUE
+		printf("pv1: %0.7f\n", pv1);
+		fprintf(out_file, "%0.7f, ", pv1);
+	#endif
+		fflush(stdout);
+	}
+	fprintf(out_file, "\n");
+
+	fprintf(out_file, "small factor\n");
+	for (i = 0; i < SIZE_W; i++){
+		n = small_factors_w[i];
+		data_prandom(n);
+		DiscreteFourierTransform_v1(n);
+	#ifdef P_VALUE
+		printf("pv1: %0.7f\n", pv1);
+		fprintf(out_file, "%0.7f, ", pv1);
+	#endif
+		fflush(stdout);
+	}
+	fprintf(out_file, "\n");
+
+	fprintf(out_file, "prime\n");
+	signal(SIGALRM, sig_handler);
+	alarm(7 * 24 * 60 * 60); // abort after a week
+	for (i = 0; i < SIZE_W; i++){
+		n = primes_w[i];
+		data_prandom(n);	
+		DiscreteFourierTransform_v1(n);
+
+	#ifdef P_VALUE
+		printf("pv1: %0.7f\n", pv1);
+		fprintf(out_file, "%0.7f, ", pv1);
+	#endif
+		fflush(stdout);
+	}
+
+	fprintf(out_file, "\n");
+
+	fflush(out_file);
+	fclose(out_file);
+#else
+int cut = 0;
 	if (argc < 3) {
 		return -1;
 	}
 	cut = atoi(argv[1]);
 	char* filename = argv[2];
+#endif
+
 	/* Test 1 */
 #ifdef TEST1
 	int n;
@@ -2116,28 +2182,24 @@ int main(int argc, char **argv){
 	/* Test 2 */
 #ifdef TEST2
 	int n, i;
-	int size_n;
+	int size_n = SIZE_W;
 	int *data;
+	double *p_values;
 	char filename_buf[120];
 	strcpy(filename_buf, "fft_results/");
+
 #ifdef POW2
-    // printf("POW2 %d\n", cut);
-	// char *filename = "fft_results/pow2/mkl_cpx_allow.txt"; /* change accordingly */
 	strcat(filename_buf, filename);
-	size_n = SIZE_P2_W;
 	data = power2_w;
+	p_values = res_pow2;
 #elif SMALL_FACTOR
-    // printf("SMALL_FACTOR %d\n", cut);
-	// char *filename = "fft_results/small_factor/mkl_cpx_allow.txt"; /* change accordingly */
 	strcat(filename_buf, filename);
-	size_n = SIZE_SM_W;
 	data = small_factors_w;
+	p_values = res_small_factors;
 #elif PRIME
-    // printf("PRIME %d\n", cut);
-	// char *filename = "fft_results/prime/mkl_cpx_allow.txt"; /* change accordingly */
 	strcat(filename_buf, filename);
-	size_n = SIZE_PR_W;
 	data = primes_w;
+	p_values = res_primes;
 #endif
 	printf("output: %s\n", filename_buf);
 	// erase the content in the previous file
@@ -2148,6 +2210,7 @@ int main(int argc, char **argv){
 		data_prandom(n);
 		benchmark(n, out_file);
 	#ifdef P_VALUE
+		pv1 = p_values[i];
 		if (fabs(pv1 - pv2) < ERR) {
 			printf("[OK] \n");
 		} else{
@@ -2164,6 +2227,7 @@ int main(int argc, char **argv){
 
 	return 0;
 }
+
 #endif
 
 

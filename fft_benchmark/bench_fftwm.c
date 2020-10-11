@@ -13,9 +13,15 @@
 #include "statistics.h"
 
 /* multi-thread version */
-void DiscreteFourierTransformFFTWm(int n){
+void DiscreteFourierTransformFFTWm(int n) {
     int i;
-    int num_thread = 6; // 2, 4, 6
+    int num_thread = 2; // 2, 4, 6
+#ifdef MT4
+    num_thread = 4;
+#endif
+#ifdef MT6
+    num_thread = 6;
+#endif
     double *m;
     fftw_complex *in, *out;    
     fftw_plan p;
@@ -67,7 +73,13 @@ void DiscreteFourierTransformFFTWm(int n){
 
 void DiscreteFourierTransformFFTWmr(int n){
     int i;
-    int num_thread = 6;
+    int num_thread = 2; // 2, 4, 6
+#ifdef MT4
+    num_thread = 4;
+#endif
+#ifdef MT6
+    num_thread = 6;
+#endif
     double *m;
     double *in;
     fftw_complex *out;    
@@ -117,7 +129,7 @@ void DiscreteFourierTransformFFTWmr(int n){
     free(m);
 }
 
-/* multi-thread version */
+// in-place, single thread
 void DiscreteFourierTransformFFTW_i(int n){
     int i;
     double *m;

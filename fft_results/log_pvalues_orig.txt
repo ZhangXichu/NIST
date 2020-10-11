@@ -1,0 +1,152 @@
+[x472816@randomness-tests NISTv2]$ ./assess 
+output: fft_benchmark/p_values2.txt
+Original: n: 2, p-value: 0.745603 
+ pv1: 0.7456028
+Original: n: 4, p-value: 0.646355 
+ pv1: 0.6463552
+Original: n: 8, p-value: 0.516412 
+ pv1: 0.5164123
+Original: n: 16, p-value: 0.168669 
+ pv1: 0.1686686
+Original: n: 32, p-value: 0.745603 
+ pv1: 0.7456028
+Original: n: 64, p-value: 0.646355 
+ pv1: 0.6463552
+Original: n: 128, p-value: 0.144292 
+ pv1: 0.1442921
+Original: n: 256, p-value: 0.730753 
+ pv1: 0.7307533
+Original: n: 512, p-value: 0.626496 
+ pv1: 0.6264963
+Original: n: 1024, p-value: 0.688069 
+ pv1: 0.6880686
+Original: n: 2048, p-value: 0.330390 
+ pv1: 0.3303900
+Original: n: 4096, p-value: 0.228422 
+ pv1: 0.2284224
+Original: n: 8192, p-value: 0.044698 
+ pv1: 0.0446975
+Original: n: 16384, p-value: 0.374011 
+ pv1: 0.3740106
+Original: n: 32768, p-value: 0.291682 
+ pv1: 0.2916819
+Original: n: 65536, p-value: 0.576025 
+ pv1: 0.5760247
+Original: n: 131072, p-value: 0.681349 
+ pv1: 0.6813490
+Original: n: 262144, p-value: 0.608231 
+ pv1: 0.6082306
+Original: n: 524288, p-value: 0.336726 
+ pv1: 0.3367257
+Original: n: 1048576, p-value: 0.105951 
+ pv1: 0.1059508
+Original: n: 2097152, p-value: 0.731258 
+ pv1: 0.7312576
+Original: n: 4194304, p-value: 0.944986 
+ pv1: 0.9449865
+Original: n: 8388608, p-value: 0.347024 
+ pv1: 0.3470241
+Original: n: 16777216, p-value: 0.547328 
+ pv1: 0.5473284
+Original: n: 33554432, p-value: 0.340404 
+ pv1: 0.3404038
+Original: n: 67108864, p-value: 0.683786 
+ pv1: 0.6837858
+Original: n: 6, p-value: 0.574149 
+ pv1: 0.5741491
+Original: n: 10, p-value: 0.468160 
+ pv1: 0.4681599
+Original: n: 15, p-value: 0.007686 
+ pv1: 0.0076858
+Original: n: 20, p-value: 0.304902 
+ pv1: 0.3049018
+Original: n: 35, p-value: 0.332317 
+ pv1: 0.3323165
+Original: n: 63, p-value: 0.930901 
+ pv1: 0.9309012
+Original: n: 175, p-value: 0.004217 
+ pv1: 0.0042169
+Original: n: 270, p-value: 0.485121 
+ pv1: 0.4851210
+Original: n: 675, p-value: 0.046945 
+ pv1: 0.0469447
+Original: n: 945, p-value: 0.575672 
+ pv1: 0.5756724
+Original: n: 2205, p-value: 0.212826 
+ pv1: 0.2128265
+Original: n: 3696, p-value: 0.415015 
+ pv1: 0.4150150
+Original: n: 6615, p-value: 0.898994 
+ pv1: 0.8989943
+Original: n: 10206, p-value: 0.311148 
+ pv1: 0.3111484
+Original: n: 19845, p-value: 0.967524 
+ pv1: 0.9675244
+Original: n: 33075, p-value: 0.934651 
+ pv1: 0.9346508
+Original: n: 70875, p-value: 0.246439 
+ pv1: 0.2464393
+Original: n: 496125, p-value: 0.808275 
+ pv1: 0.8082750
+Original: n: 826875, p-value: 0.772678 
+ pv1: 0.7726776
+Original: n: 918750, p-value: 0.364344 
+ pv1: 0.3643445
+Original: n: 1929375, p-value: 0.315682 
+ pv1: 0.3156823
+Original: n: 3858750, p-value: 0.184216 
+ pv1: 0.1842162
+Original: n: 8575000, p-value: 0.218110 
+ pv1: 0.2181102
+Original: n: 16206750, p-value: 0.870981 
+ pv1: 0.8709808
+Original: n: 31513125, p-value: 0.256165 
+ pv1: 0.2561651
+Original: n: 63530460, p-value: 0.021398 
+ pv1: 0.0213977
+Original: n: 3, p-value: 0.000000 
+ pv1: 0.0000000
+Original: n: 5, p-value: 0.123812 
+ pv1: 0.1238122
+Original: n: 7, p-value: 0.259640 
+ pv1: 0.2596398
+Original: n: 13, p-value: 0.002785 
+ pv1: 0.0027849
+Original: n: 31, p-value: 0.650371 
+ pv1: 0.6503708
+Original: n: 61, p-value: 0.976567 
+ pv1: 0.9765666
+Original: n: 127, p-value: 0.791282 
+ pv1: 0.7912825
+Original: n: 229, p-value: 0.891472 
+ pv1: 0.8914719
+Original: n: 509, p-value: 0.124668 
+ pv1: 0.1246685
+Original: n: 1013, p-value: 0.598757 
+ pv1: 0.5987573
+Original: n: 2039, p-value: 0.473767 
+ pv1: 0.4737667
+Original: n: 4093, p-value: 0.303403 
+ pv1: 0.3034030
+Original: n: 8191, p-value: 0.018277 
+ pv1: 0.0182770
+Original: n: 16381, p-value: 0.132611 
+ pv1: 0.1326107
+Original: n: 32771, p-value: 0.219443 
+ pv1: 0.2194430
+Original: n: 65537, p-value: 0.494126 
+ pv1: 0.4941260
+Original: n: 131071, p-value: 0.161194 
+ pv1: 0.1611943
+Original: n: 262139, p-value: 0.223097 
+ pv1: 0.2230968
+Original: n: 524287, p-value: 0.796723 
+ pv1: 0.7967233
+Original: n: 1048573, p-value: 0.173643 
+ pv1: 0.1736434
+Original: n: 2097143, p-value: 0.498050 
+ pv1: 0.4980501
+Original: n: 4194301, p-value: 0.481825 
+ pv1: 0.4818252
+Time exceeded
+

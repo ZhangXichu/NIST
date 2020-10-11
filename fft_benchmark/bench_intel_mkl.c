@@ -66,8 +66,8 @@ void DiscreteFourierTransformMKL(int n){ /* out-of-place */
 #ifdef P_VALUE
     double p_value;
     p_value = get_pvalue(n, m);
-    printf("MKL: p_value: %lf \n",p_value); /* use p-value to verify the result */
-    pv2 = p_value;
+    printf("MKL: n: %d, p_value: %lf \n", n, p_value); /* use p-value to verify the result */
+    pv1 = p_value;
 #endif
 
     free(in);
@@ -221,11 +221,6 @@ void DiscreteFourierTransformMKLr_i(int n){ /* in-place, result stored in CCS fo
     }
     printf("\n");
 #endif
-    printf("Output of DFT \n");
-    for (i = 0; i < n/2+1; i++){
-        printf("%0.2f %0.2fi", inOut[2*i], inOut[2*i+1]);
-    }
-    printf("\n");
 
     for (i = 0; i < n/2+1; i++){
         m[i] = sqrt(pow(inOut[2*i], 2) + pow(inOut[2*i+1], 2));

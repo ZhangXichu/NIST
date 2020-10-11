@@ -1,8 +1,6 @@
 # Ignore everything under "obj"
 obj/*
 
-# ignore text file
-*.txt
 # except cmake file
 !CMakeLists.txt 
 

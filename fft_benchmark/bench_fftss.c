@@ -14,10 +14,6 @@
 
 #include "statistics.h"
 
-#ifdef P_VALUE
-	double pv1, pv2;
-#endif
-
 void DiscreteFourierTransformFFTSS(int n){ 
     int i;
     double *in, *out;

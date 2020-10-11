@@ -34,6 +34,14 @@ void DiscreteFourierTransformIPP(int n){  /* out-of-place (no in-place impl for 
 
     int algHint = ippAlgHintNone;
 
+#ifdef FAST
+    algHint = ippAlgHintFast;
+#endif
+
+#ifdef ACCURATE
+    algHint = ippAlgHintAccurate;
+#endif
+
     // ippAlgHintNone, ippAlgHintFast, ippAlgHintAccurate
     status = ippsDFTGetSize_C_64fc(n, IPP_FFT_DIV_INV_BY_N, algHint, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
 
@@ -67,8 +75,8 @@ void DiscreteFourierTransformIPP(int n){  /* out-of-place (no in-place impl for 
 #ifdef P_VALUE
     double p_value;
     p_value = get_pvalue(n, m);
-    printf("intel IPP: p-value: %lf \n ",p_value);
-    pv2 = p_value;
+    printf("intel IPP: p-value: %d,  %lf \n ", n, p_value);
+    pv1 = p_value;
 #endif
 
     if (initBuf) ippsFree(initBuf);
@@ -97,7 +105,18 @@ void DiscreteFourierTransformIPPr(int n){  /* out-of-place */
     in = ippsMalloc_64f(n);
     out = ippsMalloc_64f(n + 2);  
 
-    status = ippsDFTGetSize_R_64f(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
+    int algHint = ippAlgHintNone;
+
+#ifdef FAST
+    algHint = ippAlgHintFast;
+#endif
+
+#ifdef ACCURATE
+    algHint = ippAlgHintAccurate;
+#endif
+
+
+    status = ippsDFTGetSize_R_64f(n, IPP_FFT_DIV_INV_BY_N, algHint, &sizeSpec, &sizeInitBuf, &sizeWorkBuf);
 
     spec = (IppsDFTSpec_R_64f *)ippsMalloc_8u(sizeSpec);
     initBuf = ippsMalloc_8u(sizeInitBuf);
@@ -110,7 +129,7 @@ void DiscreteFourierTransformIPPr(int n){  /* out-of-place */
     }
 
     /* initialization */
-    status = ippsDFTInit_R_64f(n, IPP_FFT_DIV_INV_BY_N, ippAlgHintAccurate, spec, initBuf); /* temp work buffer not used */
+    status = ippsDFTInit_R_64f(n, IPP_FFT_DIV_INV_BY_N, algHint, spec, initBuf); /* temp work buffer not used */
 
     /* set number of threads */
     // int numThreads;

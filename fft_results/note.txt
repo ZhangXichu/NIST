@@ -1,0 +1,10 @@
+amplitudes.txt:
+    upperBound: 55.38619
+    count: 485 
+    p_value: 0.68807
+
+transformation using the RNG offered in the NIST test suite.
+input length: 1024 (there are 512 points in the graph because of the symmetric property of DFT)
+
+
+amplitudes_rand.txt:

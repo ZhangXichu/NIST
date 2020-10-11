@@ -16,11 +16,7 @@
 #define	LongestRunOfOnes_v2 LongestRunOfOnes3 //2,3
 #define	Rank_v1 Rank
 #define	Rank_v2 Rank2 //2
-#ifdef DEBUG
-    #define	DiscreteFourierTransform_v1 DiscreteFourierTransform
-#else
-    #define	DiscreteFourierTransform_v1 DiscreteFourierTransform4
-#endif
+#define	DiscreteFourierTransform_v1 DiscreteFourierTransform
 // #define	DiscreteFourierTransform_v2 DiscreteFourierTransformMKL //2,3,4
 #define	NonOverlappingTemplateMatchings_v1 NonOverlappingTemplateMatchings
 #define	NonOverlappingTemplateMatchings_v2 NonOverlappingTemplateMatchings4 //2,4

@@ -9,6 +9,10 @@
 #include "../include/tools.h"
 #include "../include/stat_fncs.h"
 
+#ifdef P_VALUE
+	double pv1, pv2;
+#endif
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
          D I S C R E T E  F O U R I E R  T R A N S F O R M  T E S T 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -18,6 +22,7 @@ void  __ogg_fdrfftf(int n, double *X, double *wsave, int *ifac);
 void
 DiscreteFourierTransform(int n)
 {
+
 	double  p_value, upperBound, percentile, N_l, N_o, d, *m = NULL, *X = NULL, *wsave = NULL;
 	int		i, count, ifac[15];
 
@@ -77,9 +82,8 @@ DiscreteFourierTransform(int n)
 	p_value = erfc(fabs(d)/sqrt(2.0));
 
 	
-
 #ifdef P_VALUE
-	printf("Original: p-value: %lf \n ",p_value);
+	printf("Original: n: %d, p-value: %lf \n ", n, p_value);
 	pv1 = p_value;
 #endif
 
@@ -271,7 +275,12 @@ DiscreteFourierTransform3(int n) /* complex transformation */
 		return;
 	}
 
+#ifdef MEASURE
+	p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_MEASURE);  
+#else
 	p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);   
+#endif
+
 
 	for (i = 0; i<n; i++)
 	{
@@ -300,7 +309,7 @@ DiscreteFourierTransform3(int n) /* complex transformation */
 	p_value = erfc(fabs(d) / sqrt(2.0));
 
 #ifdef P_VALUE
-	printf("FFTW cpx p_value: %lf \n ",p_value);
+	printf("FFTW cpx p_value: %d %lf \n ", n, p_value);
 	pv1 = p_value;
 	pv2 = p_value;
 #endif
@@ -370,8 +379,13 @@ DiscreteFourierTransform4(int n) /* real FFT */
 		return;
 	}
 
-	p = fftw_plan_dft_r2c_1d(n, in, out, FFTW_ESTIMATE );
+#ifdef MEASURE
+	p = fftw_plan_dft_r2c_1d(n, in, out, FFTW_MEASURE);
 
+#else
+	p = fftw_plan_dft_r2c_1d(n, in, out, FFTW_ESTIMATE );
+#endif
+	
 	for (i = 0; i<n; i++)
 	{
 		in[i] = 2 * ((double)(get_nth_block4(array, i) & 1)) - 1;
@@ -421,7 +435,7 @@ DiscreteFourierTransform4(int n) /* real FFT */
 	p_value = erfc(fabs(d) / sqrt(2.0));
 
 #ifdef P_VALUE
-	printf("FFTW real p_value: %lf \n",p_value);
+	printf("FFTW real p_value: %d,  %lf \n", n, p_value);
 	pv1 = p_value;
 	pv2 = p_value;
 #endif

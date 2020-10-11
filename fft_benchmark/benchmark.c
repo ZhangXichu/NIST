@@ -16,11 +16,6 @@
 
 
 void benchmark(int n, FILE *out_file){
-	/* the original fft */
-#ifdef P_VALUE
-	DiscreteFourierTransform_v1(n);
-#endif
-
 	benchmark_aux(n, out_file);
 }
 

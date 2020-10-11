@@ -13,10 +13,6 @@
 #include "../include/pocketfft.h"
 #include "statistics.h"
 
-#ifdef P_VALUE
-	double pv1, pv2;
-#endif
-
 void DiscreteFourierTransformPocket(int n){ /* in-place transformation */
     int i;
     int status;

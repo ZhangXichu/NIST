@@ -19,7 +19,8 @@ extern "C" {
 // #define COLLECT_DATA_DFT 1
 // #define P_VALUE 1
 #define BENCHMARK 1
-// #define DEBUG 1    
+// #define DEBUG 1
+
 
 // Original stuff
 

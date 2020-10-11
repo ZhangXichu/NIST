@@ -1,0 +1,52 @@
+# make all the plots ready
+# use NISTv to run the verification tests paralelly
+# precalculate the results for the whole data set using the original implemetation
+    can't really proceed after 1048573 (prime case), and from n = 1048573, the p_value result begins to deviate 
+    - calculate the rest using FFTW
+make it possible to run all the tests from test.sh script
+# refactor test_mkl_avoid and verify_mkl_avoid
+# make the bitmaps using TRNG and rand() function in C
+// - add the code demo of FFTSS and KFR to the appendix
+// - implement the FFT (only supports 2^k size) and add the code to appendix (no need for adding new stuff)
+# - recreate the graph next_primes.pdf (the edge of the original one is cut out)
+# - rerun the in-place FFTW (small factor case)
+# - change the testing data for SMALL_FACTOR (each should be chosen to be close to the corresponding power of 2)
+- rerun the corresponding tests:
+    # - precompute the p-values using the original implementation, IPP (cpx), MKL (cpx), FFTW (cpx)
+    - params: IPP (hints), MKL (workspace), FFTW (est & mea)
+    - in- & out-of-place: IPP (out), MKL (out, in), FFTW (out, in)
+    - overview 
+        - test FFTS real individually (doesn't support size 2)
+- delete the extended data sets category (note necesssary anymore) 
+some tasks which might not be necesssary:
+    - implement Bluestein algorithm
+    - figure out in-place FFT
+        -- the results are not completely right
+    - try iterative in-place mergesort
+
+FFTW 
+    # ESTIMATE (default out-of-place) real: POW2, SMALL_FACTOR, PRIME; cpx: POW2, SMALL_FACTOR, PRIME
+    # ESTIMATE in-place real: POW2, SMALL_FACTOR, PRIME; cpx: POW2, SMALL_FACTOR, PRIME
+    MEASURE real: # POW2, SMALL_FACTOR, PRIME; cpx: # POW2, SMALL_FACTOR, PRIME
+        (very slow)
+    # - The graph of placement comparison is not correct for prime case 
+    # - Also: change the legend in the graph
+    - rerun the tests for multi-theraded FFT on the larger set of data (2 to 2^26)
+
+IPP:
+    // in-place (not supported -- make sure of it)
+    # out-of-place: real: POW2, SMALL_FACTOR, PRIME; cpx: POW2, SMALL_FACTOR, PRIME
+    - change the real transform to CCS format (for the simplicity for retrieving data)
+
+MKL:
+    # ALLOW (default out-of-place) real: POW2, SMALL_FACTOR, PRIME; cpx: POW2, SMALL_FACTOR, PRIME
+    # ALLOW in-place real: POW2, SMALL_FACTOR, PRIME; cpx: POW2, SMALL_FACTOR, PRIME
+    # AVOID real: POW2, SMALL_FACTOR, PRIME; cpx: POW2, SMALL_FACTOR, PRIME
+        real PRIME: plot again without the extreme value at point 33554393 and 67108837
+        - check why are there the extreme values
+
+The valley in the graph of IPP and MKL (prime case, cpx): explain: padding in Bluestein algorithm
+    - plot the distance to the next power of 2
+    - check what algorithm does FFTW use to compute the FFT of prime size
+
+

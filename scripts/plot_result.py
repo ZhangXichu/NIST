@@ -18,17 +18,14 @@ x_pow2_w = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 3
 x_sf_w = [6, 10, 15, 20, 35, 63, 175, 270, 675, 945, 2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750, 1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
 x_pr_w = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
 
-config_a = [('black', '.', '-'), ('black', '*', '--'), ('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
+config_a = [('black', '.', '-'), ('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
     ('midnightblue', '.', '--'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('red', '.', '-')]
 
 config_fftw_mt = [('black', '.', '-'), ('black', 'o', '--'), ('black', '+', ':'), ('dimgrey', '1', '-.')]
 
 config_e = [('blue', '.', '-'), ('magenta', '.', '-'), ('black', '.', '-'), ('magenta', '*', '--'), ('black', '*', '--')]
 
-# plot MKL first
-config_param = [('magenta', '.', '-'), ('magenta', '*', '--'), ('blue', '.', '-'), ('blue', 'o', '--'), ('blue', '*', '-.')]
-# plot IPP first
-config_param2 = [('blue', '.', '-'), ('blue', 'o', '--'), ('blue', '*', '-.'), ('magenta', '.', '-'), ('magenta', '*', '--')]
+config_param = [('blue', '.', '-'), ('blue', 'o', '--'), ('blue', '*', '-.'), ('magenta', '.', '-'), ('magenta', '*', '--'), ('black', '.', '-'), ('black', '*', '--')]
 
 def parse_file(in_file_name):
     in_file = open(in_file_name, "r")
@@ -94,6 +91,8 @@ def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=
         co = config[counter][0]
         ma = config[counter][1]
         li = config[counter][2]
+        if name == "KFR":
+            co = "dimgrey"
         get_flop(y, cpx, x_labels, num_values)
         ax.plot(x, y, color=co, label=name, marker=ma, linestyle=li, fillstyle='none')
         counter = counter + 1
@@ -117,22 +116,17 @@ def plot_summary(type="pow2", cpx=True):
     fftw = "../fft_results/{0}/fftw_{1}_frt.txt".format(type, tr)
     ffts = "../fft_results/{0}/ffts_{1}_frt.txt".format(type, tr)
     fftss = "../fft_results/{0}/fftss_{1}_frt.txt".format(type, tr)
-    ipp = "../fft_results/{0}/ipp_{1}_frt.txt".format(type, tr)
+    ipp = "../fft_results/{0}/ipp_{1}_none_frt.txt".format(type, tr)
     gsl = "../fft_results/{0}/gsl_{1}_frt.txt".format(type, tr)
     pocket = "../fft_results/{0}/pocket_{1}_frt.txt".format(type, tr)
     kfr = "../fft_results/{0}/kfr_{1}_frt.txt".format(type, tr)
-    mkl = "../fft_results/{0}/mkl_{1}_frt.txt".format(type, tr)
+    mkl = "../fft_results/{0}/mkl_{1}_allow_frt.txt".format(type, tr)
     original = "../fft_results/{0}/original_frt.txt".format(type)
-
-    # for testing
-    fictive = "../fft_results/small_factor/fictive.txt"
 
     res_fftw = parse_file(fftw)
     lst_data.append(("FFTW", res_fftw[1], res_fftw[2]))
     res_original = parse_file(original)
     lst_data.append(("Original", res_original[1], res_original[2]))
-    res_fictive = parse_file(fictive)
-    lst_data.append(("fictive", res_fictive[1], res_fictive[2]))
     res_ipp = parse_file(ipp)
     lst_data.append(("Intel-IPP", res_ipp[1], res_ipp[2]))
     res_gsl = parse_file(gsl)
@@ -187,7 +181,7 @@ def plot_fftw_mt(factor="", type="pow2", cpx=True):
     else:
         tr = "real"
 
-    fftw_cpx = "../fft_results/{0}/fftw_{1}_frt.txt".format(factor, tr)
+    fftw_cpx = "../fft_results/{0}/fftw_{1}_est_frt.txt".format(factor, tr)
     fftw_mt_2_cpx = "../fft_results/{0}/fftw_mt_2_{1}_frt.txt".format(factor, tr)
     fftw_mt_4_cpx = "../fft_results/{0}/fftw_mt_4_{1}_frt.txt".format(factor, tr)
     fftw_mt_6_cpx = "../fft_results/{0}/fftw_mt_6_{1}_frt.txt".format(factor, tr)
@@ -203,7 +197,8 @@ def plot_fftw_mt(factor="", type="pow2", cpx=True):
     res_fftw_mt_6_cpx = parse_file(fftw_mt_6_cpx)
     lst_data.append(("6 threads", res_fftw_mt_6_cpx[1], res_fftw_mt_6_cpx[2]))
 
-    graph(lst_data, config=config_fftw_mt, name_f="{0}/plot_fftw_mt_{1}.pdf".format(factor, tr), type=type)
+
+    graph(lst_data, config=config_fftw_mt, name_f="{0}/plot_fftw_mt_{1}.pdf".format(factor, tr), type=type, whole=True)
 
 
 def plot_fftw_mt_cpx_pow2():
@@ -230,7 +225,7 @@ def plot_fftw_mt_real_prime():
     plot_fftw_mt("prime", type="prime", cpx=False)
 
 
-def plot_extended(type="pow2", cpx=True):
+def plot_placement(type="pow2", cpx=True):
     if cpx:
         tr = "cpx"
     else:
@@ -239,9 +234,9 @@ def plot_extended(type="pow2", cpx=True):
     lst_data = []
 
     # out-of-place
-    ipp = "../fft_results/{0}/ipp_{1}_e_frt.txt".format(type, tr)
-    mkl = "../fft_results/{0}/mkl_{1}_e_frt.txt".format(type, tr)
-    fftw = "../fft_results/{0}/fftw_{1}_e_frt.txt".format(type, tr)
+    ipp = "../fft_results/{0}/ipp_{1}_fast_frt.txt".format(type, tr)
+    mkl = "../fft_results/{0}/mkl_{1}_allow_frt.txt".format(type, tr)
+    fftw = "../fft_results/{0}/fftw_{1}_est_frt.txt".format(type, tr)
 
     res_ipp = parse_file(ipp)
     lst_data.append(("Intel-IPP", res_ipp[1], res_ipp[2]))
@@ -251,39 +246,39 @@ def plot_extended(type="pow2", cpx=True):
     lst_data.append(("FFTW", res_fftw[1], res_fftw[2]))
 
     # in-place
-    mkl_i = "../fft_results/{0}/mkl_{1}_e_i_frt.txt".format(type, tr)
-    fftw_i = "../fft_results/{0}/fftw_{1}_e_i_frt.txt".format(type, tr)
+    mkl_i = "../fft_results/{0}/mkl_{1}_in_frt.txt".format(type, tr)
+    fftw_i = "../fft_results/{0}/fftw_{1}_in_frt.txt".format(type, tr)
 
     res_mkl_i = parse_file(mkl_i)
     lst_data.append(("Intel-MKL in-place", res_mkl_i[1], res_mkl_i[2]))
     res_fftw_i = parse_file(fftw_i)
     lst_data.append(("FFTW in-place", res_fftw_i[1], res_fftw_i[2]))
 
-    graph(lst_data, config=config_e, name_f="summary_{0}_{1}_e.pdf".format(tr, type), type=type)
+    graph(lst_data, config=config_e, name_f="{1}/{0}_{1}_placement.pdf".format(tr, type), type=type, whole=True)
 
 
-def plot_extended_cpx_pow2():
-    plot_extended()
+def plot_placement_cpx_pow2():
+    plot_placement()
 
 
-def plot_extended_cpx_small_factor():
-    plot_extended(type="small_factor")
+def plot_placement_cpx_small_factor():
+    plot_placement(type="small_factor")
 
 
-def plot_extended_cpx_prime():
-    plot_extended(type="prime")
+def plot_placement_cpx_prime():
+    plot_placement(type="prime")
 
 
-def plot_extended_real_pow2():
-    plot_extended(cpx=False)
+def plot_placement_real_pow2():
+    plot_placement(cpx=False)
 
 
-def plot_extended_real_small_factor():
-    plot_extended(cpx=False, type="small_factor")
+def plot_placement_real_small_factor():
+    plot_placement(cpx=False, type="small_factor")
 
 
-def plot_extended_real_prime():
-    plot_extended(cpx=False, type="prime")
+def plot_placement_real_prime():
+    plot_placement(cpx=False, type="prime")
 
 
 # IPP, MKL, FFTW with different params
@@ -302,40 +297,33 @@ def plot_params(type="pow2", cpx=True):
     mkl_allow = "../fft_results/{0}/mkl_{1}_allow_frt.txt".format(type, tr)
     mkl_avoid = "../fft_results/{0}/mkl_{1}_avoid_frt.txt".format(type, tr)
 
-    if tr == "real":
-        res_mkl_allow = parse_file(mkl_allow)
-        lst_data.append(("MKL-allow", res_mkl_allow[1], res_mkl_allow[2]))
+    fftw_estimate = "../fft_results/{0}/fftw_{1}_est_frt.txt".format(type, tr)
 
-        res_mkl_avoid = parse_file(mkl_avoid)
-        lst_data.append(("MKL-avoid", res_mkl_avoid[1], res_mkl_avoid[2]))
+    res_ipp_none = parse_file(ipp_none)
+    lst_data.append(("IPP-none", res_ipp_none[1], res_ipp_none[2]))
 
-        res_ipp_none = parse_file(ipp_none)
-        lst_data.append(("IPP-none", res_ipp_none[1], res_ipp_none[2]))
+    res_ipp_fast = parse_file(ipp_fast)
+    lst_data.append(("IPP-fast", res_ipp_fast[1], res_ipp_fast[2]))
 
-        res_ipp_fast = parse_file(ipp_fast)
-        lst_data.append(("IPP-fast", res_ipp_fast[1], res_ipp_fast[2]))
+    res_ipp_accurate = parse_file(ipp_accurate)
+    lst_data.append(("IPP-accurate", res_ipp_accurate[1], res_ipp_accurate[2]))
 
-        res_ipp_accurate = parse_file(ipp_accurate)
-        lst_data.append(("IPP-accurate", res_ipp_accurate[1], res_ipp_accurate[2]))
+    res_mkl_allow = parse_file(mkl_allow)
+    lst_data.append(("MKL-allow", res_mkl_allow[1], res_mkl_allow[2]))
 
-        graph(lst_data, config=config_param, name_f="summary_{0}_{1}_params.pdf".format(tr, type), type=type, whole=True)
-    else:
-        res_ipp_none = parse_file(ipp_none)
-        lst_data.append(("IPP-none", res_ipp_none[1], res_ipp_none[2]))
+    res_mkl_avoid = parse_file(mkl_avoid)
+    lst_data.append(("MKL-avoid", res_mkl_avoid[1], res_mkl_avoid[2]))
 
-        res_ipp_fast = parse_file(ipp_fast)
-        lst_data.append(("IPP-fast", res_ipp_fast[1], res_ipp_fast[2]))
+    res_fftw_estimate = parse_file(fftw_estimate)
+    lst_data.append(("FFTW-estimate", res_fftw_estimate[1], res_fftw_estimate[2]))
+    
+    # with param MEASURE, only plot case pow2 (cpx and real)
+    if type == "pow2":
+            fftw_measure = "../fft_results/{0}/fftw_{1}_mea_frt.txt".format(type, tr)
+            res_fftw_measure = parse_file(fftw_measure)
+            lst_data.append(("FFTW-measure", res_fftw_measure[1], res_fftw_measure[2]))
 
-        res_ipp_accurate = parse_file(ipp_accurate)
-        lst_data.append(("IPP-accurate", res_ipp_accurate[1], res_ipp_accurate[2]))
-
-        res_mkl_allow = parse_file(mkl_allow)
-        lst_data.append(("MKL-allow", res_mkl_allow[1], res_mkl_allow[2]))
-
-        res_mkl_avoid = parse_file(mkl_avoid)
-        lst_data.append(("MKL-avoid", res_mkl_avoid[1], res_mkl_avoid[2]))
-
-        graph(lst_data, config=config_param2, name_f="summary_{0}_{1}_params.pdf".format(tr, type), type=type, whole=True)
+    graph(lst_data, config=config_param, name_f="{1}/{0}_{1}_params.pdf".format(tr, type), type=type, whole=True)
 
 
 def plot_params_cpx_pow2():
@@ -351,7 +339,7 @@ def plot_params_cpx_prime():
 
 
 def plot_params_real_pow2():
-    plot_params()
+    plot_params(cpx=False)
 
 
 def plot_params_real_small_factor():
@@ -393,24 +381,25 @@ def main():
     ##########  Placement  ###########
     ##################################
 
-    # plot_extended_cpx_pow2()
-    # plot_extended_cpx_small_factor()
-    # plot_extended_cpx_prime()
+    plot_placement_cpx_pow2()
+    plot_placement_cpx_small_factor()
+    plot_placement_cpx_prime()
 
-    # plot_extended_real_pow2()
-    # plot_extended_real_small_factor()
-    # plot_extended_real_prime()
+    plot_placement_real_pow2()
+    plot_placement_real_small_factor()
+    plot_placement_real_prime()
 
     ##################################
     #####  Different params  #########
     ##################################
-    plot_params_cpx_pow2()
-    plot_params_cpx_small_factor()
-    plot_params_cpx_prime()
 
-    plot_params_real_pow2()
-    plot_params_real_small_factor()
-    plot_params_real_prime()
+    # plot_params_cpx_pow2()
+    # plot_params_cpx_small_factor()
+    # plot_params_cpx_prime()
+
+    # plot_params_real_pow2()
+    # plot_params_real_small_factor()
+    # plot_params_real_prime()
 
 
 if __name__ == '__main__':

@@ -30,135 +30,136 @@ OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
 	  $(OBJDIR)/bench_fftwm.o
 
 assess: $(OBJ)  # -Wl,--verbose
-	$(CC) -o $@ $(OBJ) -m64 -lm -L./libs -lffts -lfftw3  -lfftw3_threads -lkfr_capi \
+	@echo building $@
+	@$(CC) -o $@ $(OBJ) -m64 -lm -L./libs -lffts -lfftw3  -lfftw3_threads -lkfr_capi \
 	-lgsl -lgslcblas \
-	-L./libs/kfr -lkfr_capi_avx_pic -lkfr_capi_avx2_pic -lkfr_capi_avx512_pic -lkfr_capi_sse2_pic -lkfr_capi_sse41_pic \
+	-L./libs/kfr -lkfr_capi \
 	-L./libs/intel_mkl -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 \
 	-L./libs/intel_ipp/threaded -lippcore -lippvm -lipps \
 	-L./libs/fftss -lfftss \
 	-lpthread -ldl 
 
 $(OBJDIR)/assess.o: $(SRCDIR)/assess.c defs.h decls.h utilities.h fftw3.h ffts.h config.h externs.h
-	$(CC) -o $@ -c $(SRCDIR)/assess.c 
+	@$(CC) -o $@ -c $(SRCDIR)/assess.c 
 
 $(OBJDIR)/frequency.o: $(SRCDIR)/frequency.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/frequency.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/frequency.c
 
 $(OBJDIR)/blockFrequency.o: $(SRCDIR)/blockFrequency.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/blockFrequency.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/blockFrequency.c
 
 $(OBJDIR)/cusum.o: $(SRCDIR)/cusum.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/cusum.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/cusum.c
 
 $(OBJDIR)/runs.o: $(SRCDIR)/runs.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/runs.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/runs.c
 
 $(OBJDIR)/longestRunOfOnes.o: $(SRCDIR)/longestRunOfOnes.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/longestRunOfOnes.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/longestRunOfOnes.c
 
 $(OBJDIR)/rank.o: $(SRCDIR)/rank.c defs.h externs.h matrix.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/rank.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/rank.c
 
 $(OBJDIR)/discreteFourierTransform.o: $(SRCDIR)/discreteFourierTransform.c \
         defs.h externs.h utilities.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/discreteFourierTransform.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/discreteFourierTransform.c
 
 $(OBJDIR)/nonOverlappingTemplateMatchings.o: \
         $(SRCDIR)/nonOverlappingTemplateMatchings.c defs.h externs.h utilities.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/nonOverlappingTemplateMatchings.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/nonOverlappingTemplateMatchings.c
 
 $(OBJDIR)/overlappingTemplateMatchings.o: \
         $(SRCDIR)/overlappingTemplateMatchings.c defs.h externs.h utilities.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/overlappingTemplateMatchings.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/overlappingTemplateMatchings.c
 
 $(OBJDIR)/universal.o: $(SRCDIR)/universal.c defs.h externs.h utilities.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/universal.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/universal.c
 
 $(OBJDIR)/approximateEntropy.o: $(SRCDIR)/approximateEntropy.c defs.h externs.h utilities.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/approximateEntropy.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/approximateEntropy.c
 
 $(OBJDIR)/randomExcursions.o: $(SRCDIR)/randomExcursions.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/randomExcursions.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/randomExcursions.c
 
 $(OBJDIR)/randomExcursionsVariant.o: $(SRCDIR)/randomExcursionsVariant.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/randomExcursionsVariant.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/randomExcursionsVariant.c
 
 $(OBJDIR)/serial.o: $(SRCDIR)/serial.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/serial.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/serial.c
 
 $(OBJDIR)/linearComplexity.o: $(SRCDIR)/linearComplexity.c defs.h externs.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/linearComplexity.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/linearComplexity.c
 
 $(OBJDIR)/dfft.o: $(SRCDIR)/dfft.c config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/dfft.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/dfft.c
 
 $(OBJDIR)/matrix.o: $(SRCDIR)/matrix.c defs.h externs.h utilities.h matrix.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/matrix.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/matrix.c
 
 $(OBJDIR)/genutils.o: $(SRCDIR)/genutils.c config.h genutils.h 
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/genutils.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/genutils.c
 
 $(OBJDIR)/cephes.o: $(SRCDIR)/cephes.c cephes.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/cephes.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/cephes.c
 
 $(OBJDIR)/utilities.o: $(SRCDIR)/utilities.c defs.h externs.h utilities.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/utilities.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/utilities.c
 
 $(OBJDIR)/generators.o: $(SRCDIR)/generators.c defs.h externs.h utilities.h \
         config.h generators.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/generators.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/generators.c
 
 $(OBJDIR)/BMA.o: $(SRCDIR)/BMA.c BMA.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/BMA.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/BMA.c
 
 $(OBJDIR)/BM.o: $(SRCDIR)/BM.c BM.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/BM.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/BM.c
 
 $(OBJDIR)/LUTs.o: $(SRCDIR)/LUTs.c
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/LUTs.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/LUTs.c
 
 $(OBJDIR)/main.o: $(SRCDIR)/main.c cephes.h externs.h utilities.h tools.h stat_fncs.h test_data.h config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/main.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/main.c
 
 $(OBJDIR)/tools.o: $(SRCDIR)/tools.c config.h
-	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/tools.c
+	@$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/tools.c
 
 # benchmark
 $(OBJDIR)/benchmark.o: $(BENCHDIR)/benchmark.c benchmark.h stat_fncs.h timer.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/benchmark.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/benchmark.c
 
 $(OBJDIR)/timer.o: $(BENCHDIR)/timer.c timer.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/timer.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/timer.c
 
 $(OBJDIR)/statistics.o: $(BENCHDIR)/statistics.c statistics.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/statistics.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/statistics.c
 
 $(OBJDIR)/bench_ffts.o: $(BENCHDIR)/bench_ffts.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_ffts.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_ffts.c
 
 $(OBJDIR)/bench_kfr.o: $(BENCHDIR)/bench_kfr.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_kfr.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_kfr.c
 
 $(OBJDIR)/bench_intel_mkl.o: $(BENCHDIR)/bench_intel_mkl.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_intel_mkl.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_intel_mkl.c
 
 $(OBJDIR)/bench_intel_ipp.o: $(BENCHDIR)/bench_intel_ipp.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_intel_ipp.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_intel_ipp.c
  
 $(OBJDIR)/pocketfft.o: $(BENCHDIR)/pocketfft.c pocketfft.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/pocketfft.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/pocketfft.c
 
 $(OBJDIR)/bench_pocket.o: $(BENCHDIR)/bench_pocket.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_pocket.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_pocket.c
 
 $(OBJDIR)/bench_gsl.o: $(BENCHDIR)/bench_gsl.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_gsl.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_gsl.c
 
 $(OBJDIR)/bench_fftss.o: $(BENCHDIR)/bench_fftss.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftss.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftss.c
 
 $(OBJDIR)/bench_fftwm.o: $(BENCHDIR)/bench_fftwm.c stat_fncs.h config.h externs.h
-	$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftwm.c
+	@$(CC) -o $@ $(GCCFLAGS) $(BENCHDIR)/bench_fftwm.c
 
 clean:
 	rm -f assess $(OBJDIR)/*.o

@@ -67,7 +67,7 @@ void DiscreteFourierTransformMKL(int n){ /* out-of-place */
     double p_value;
     p_value = get_pvalue(n, m);
     printf("MKL: n: %d, p_value: %lf \n", n, p_value); /* use p-value to verify the result */
-    pv1 = p_value;
+    pv2 = p_value;
 #endif
 
     free(in);

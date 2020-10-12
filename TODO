@@ -13,10 +13,12 @@ make it possible to run all the tests from test.sh script
 # - change the testing data for SMALL_FACTOR (each should be chosen to be close to the corresponding power of 2)
 - rerun the corresponding tests:
     # - precompute the p-values using the original implementation, IPP (cpx), MKL (cpx), FFTW (cpx)
-    - params: IPP (hints), MKL (workspace), FFTW (est & mea)
-    - in- & out-of-place: IPP (out), MKL (out, in), FFTW (out, in)
+    # - multi-therad (FFTW)
+    # - params: IPP (hints), # MKL (workspace), FFTW (est & mea)
+    - in- & out-of-place: IPP (out), MKL (out, in), # FFTW (out, in)
     - overview 
         - test FFTS real individually (doesn't support size 2)
+        - test KFR real individually (verify first)
 - delete the extended data sets category (note necesssary anymore) 
 some tasks which might not be necesssary:
     - implement Bluestein algorithm
@@ -46,7 +48,7 @@ MKL:
         - check why are there the extreme values
 
 The valley in the graph of IPP and MKL (prime case, cpx): explain: padding in Bluestein algorithm
-    - plot the distance to the next power of 2
+    # - plot the distance to the next power of 2
     - check what algorithm does FFTW use to compute the FFT of prime size
 
 

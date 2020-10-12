@@ -3,23 +3,17 @@ import matplotlib
 import matplotlib.pyplot as plt
 from math import log2
 
-# basic test data
-x_pow2 = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
-x_sf = [6, 10, 15, 20, 35, 63, 175, 270, 675, 945, 2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750]
-x_pr = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771, 65537,131071, 262139]
 
-# extended test data
-x_pow2_e = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864]
-x_sf_e = [2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750, 1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
-x_pr_e = [2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
+# test data
+x_pow2 = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576,
+     2097152, 4194304, 8388608, 16777216, 33554432, 67108864]
+x_sf = [6, 10, 15, 20, 35, 63, 140, 270, 567, 945, 2205, 3969, 8505, 15309, 31752, 60025, 127575, 275625, 551250, 1071875,
+     1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
+x_pr = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 
+    2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
 
-# whole set of test data
-x_pow2_w = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864]
-x_sf_w = [6, 10, 15, 20, 35, 63, 175, 270, 675, 945, 2205, 3696, 6615, 10206, 19845, 33075, 70875, 496125, 826875, 918750, 1929375, 3858750, 8575000, 16206750, 31513125, 63530460]
-x_pr_w = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771, 65537,131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
-
-config_a = [('black', '.', '-'), ('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
-    ('midnightblue', '.', '--'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('red', '.', '-')]
+config_a = [('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
+    ('midnightblue', '.', '-'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('black', '.', '-')]
 
 config_fftw_mt = [('black', '.', '-'), ('black', 'o', '--'), ('black', '+', ':'), ('dimgrey', '1', '-.')]
 
@@ -53,27 +47,13 @@ def get_flop(y, cpx, x_labels, num_values):
 
 
 def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=False, whole=False):
-    if extended:
-        if type == "pow2":
-            x_labels = x_pow2_e
-        elif type == "small_factor":
-            x_labels = x_sf_e
-        else:  # prime
-            x_labels = x_pr_e
-    elif whole:
-        if type == "pow2":
-            x_labels = x_pow2_w
-        elif type == "small_factor":
-            x_labels = x_sf_w
-        else:  # prime
-            x_labels = x_pr_w
-    else:
-        if type == "pow2":
-            x_labels = x_pow2
-        elif type == "small_factor":
-            x_labels = x_sf
-        else:  # prime
-            x_labels = x_pr
+
+    if type == "pow2":
+        x_labels = x_pow2
+    elif type == "small_factor":
+        x_labels = x_sf
+    else:  # prime
+        x_labels = x_pr
 
     counter = 0
     num_values = len(x_labels)
@@ -93,6 +73,10 @@ def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=
         li = config[counter][2]
         if name == "KFR":
             co = "dimgrey"
+        if name == "FFTW":
+            co = 'black'
+            ma = '*'
+            li = '--'
         get_flop(y, cpx, x_labels, num_values)
         ax.plot(x, y, color=co, label=name, marker=ma, linestyle=li, fillstyle='none')
         counter = counter + 1
@@ -113,7 +97,7 @@ def plot_summary(type="pow2", cpx=True):
 
     lst_data = []
 
-    fftw = "../fft_results/{0}/fftw_{1}_frt.txt".format(type, tr)
+    fftw = "../fft_results/{0}/fftw_{1}_est_frt.txt".format(type, tr)
     ffts = "../fft_results/{0}/ffts_{1}_frt.txt".format(type, tr)
     fftss = "../fft_results/{0}/fftss_{1}_frt.txt".format(type, tr)
     ipp = "../fft_results/{0}/ipp_{1}_none_frt.txt".format(type, tr)
@@ -123,8 +107,6 @@ def plot_summary(type="pow2", cpx=True):
     mkl = "../fft_results/{0}/mkl_{1}_allow_frt.txt".format(type, tr)
     original = "../fft_results/{0}/original_frt.txt".format(type)
 
-    res_fftw = parse_file(fftw)
-    lst_data.append(("FFTW", res_fftw[1], res_fftw[2]))
     res_original = parse_file(original)
     lst_data.append(("Original", res_original[1], res_original[2]))
     res_ipp = parse_file(ipp)
@@ -147,6 +129,13 @@ def plot_summary(type="pow2", cpx=True):
         res_kfr = parse_file(kfr)
         lst_data.append(("KFR", res_kfr[1], res_kfr[2]))
 
+    if type == "prime":
+        if cpx:
+            res_kfr = parse_file(kfr)
+            lst_data.append(("KFR", res_kfr[1], res_kfr[2]))
+
+    res_fftw = parse_file(fftw)
+    lst_data.append(("FFTW", res_fftw[1], res_fftw[2]))
     
     graph(lst_data, name_f="summary_{0}_{1}.pdf".format(tr, type), type=type)
 
@@ -357,25 +346,25 @@ def main():
     #### Summary #####################
     ##################################
 
-    # plot_summary_cpx_pow2()
-    # plot_summary_cpx_small_factor()
-    # plot_summary_cpx_prime()
+    plot_summary_cpx_pow2()
+    plot_summary_cpx_small_factor()
+    plot_summary_cpx_prime()
 
-    # plot_summary_real_pow2()
-    # plot_summary_real_small_factor()
-    # plot_summary_real_prime()
+    plot_summary_real_pow2()
+    plot_summary_real_small_factor()
+    plot_summary_real_prime()
 
     ##################################
     #### FFTW multi thread version ###
     ##################################
 
-    # plot_fftw_mt_cpx_pow2()
-    # plot_fftw_mt_cpx_small_factor()
-    # plot_fftw_mt_cpx_prime()
+    plot_fftw_mt_cpx_pow2()
+    plot_fftw_mt_cpx_small_factor()
+    plot_fftw_mt_cpx_prime()
 
-    # plot_fftw_mt_real_pow2()
-    # plot_fftw_mt_real_small_factor()
-    # plot_fftw_mt_real_prime()
+    plot_fftw_mt_real_pow2()
+    plot_fftw_mt_real_small_factor()
+    plot_fftw_mt_real_prime()
 
     ##################################
     ##########  Placement  ###########
@@ -393,13 +382,13 @@ def main():
     #####  Different params  #########
     ##################################
 
-    # plot_params_cpx_pow2()
-    # plot_params_cpx_small_factor()
-    # plot_params_cpx_prime()
+    plot_params_cpx_pow2()
+    plot_params_cpx_small_factor()
+    plot_params_cpx_prime()
 
-    # plot_params_real_pow2()
-    # plot_params_real_small_factor()
-    # plot_params_real_prime()
+    plot_params_real_pow2()
+    plot_params_real_small_factor()
+    plot_params_real_prime()
 
 
 if __name__ == '__main__':

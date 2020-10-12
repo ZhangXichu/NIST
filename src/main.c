@@ -2205,7 +2205,16 @@ int cut = 0;
 	// erase the content in the previous file
 	FILE *out_data = fopen(filename_buf, "w");
 	FILE *out_file = freopen(filename_buf, "a", out_data);	
-	for (i = 0; i < size_n - cut; i++){
+	int initval = 0;
+#ifdef INIT
+	// for the trival values which are not supported, set performance to 0
+	initval = INIT;
+	for (i = 0; i < initval; i++) {
+		n =data[i];
+		fprintf(out_file, "%d %d\n", n, 0);
+	}
+#endif
+	for (i = initval; i < size_n - cut; i++){
 		n = data[i];
 		data_prandom(n);
 		benchmark(n, out_file);

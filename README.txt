@@ -197,3 +197,13 @@ this argument avoids inputs, which are very large and will take
 unrealistically a lot of time to compute.
 The last argument is a string that defines the name of the output file.
 
+*************************************************************************
+*                                                                       *
+*                              Plots                                    *
+*                                                                       *
+*************************************************************************
+The scripts used to make graphs are in the directory scripts. 
+File plot_ampli.py plots a sample transformed bit sequence and shows the 
+corresponding threshold of peak height.
+File plot_result.py plots the performance of each library with different
+inputs. The tests can be switched in main function.

@@ -365,28 +365,28 @@ function verify_fftw(){
 
 # speed comparison and verify results
 function test() {
-    test_ipp # [done]
-    test_mkl # out-of-place, small_factor, real - check this again
-    test_fftw # [done]
+    test_ipp 
+    test_mkl 
+    test_fftw 
 
-    test_original # [done]
-    test_ffts # [done]
-    test_fftss # [done]
+    test_original 
+    test_ffts 
+    test_fftss 
     test_gsl 
-    test_pocket # [done]
-    test_kfr # [done]
+    test_pocket 
+    test_kfr 
 }
 
 function verify() {
-    verify_ipp # [done]
-    verify_mkl # [done]
-    verify_fftw # [done]
+    verify_ipp 
+    verify_mkl 
+    verify_fftw 
 
-    verify_ffts # [done]
-    verify_fftss # [done]
-    verify_gsl # [done]
-    verify_pocket # [done]
-    verify_kfr # [done]
+    verify_ffts 
+    verify_fftss 
+    verify_gsl 
+    verify_pocket 
+    verify_kfr
 }
 
 verify

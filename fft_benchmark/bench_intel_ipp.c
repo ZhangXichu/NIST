@@ -76,7 +76,7 @@ void DiscreteFourierTransformIPP(int n){  /* out-of-place (no in-place impl for 
     double p_value;
     p_value = get_pvalue(n, m);
     printf("intel IPP: p-value: %d,  %lf \n ", n, p_value);
-    pv1 = p_value;
+    pv2 = p_value;
 #endif
 
     if (initBuf) ippsFree(initBuf);

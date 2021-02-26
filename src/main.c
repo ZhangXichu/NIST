@@ -2116,7 +2116,7 @@ int main(int argc, char **argv){
 	
 	fprintf(out_file, "pow2\n");
 	for (i = 0; i < SIZE_W; i++){
-		n = power2_w[i];
+		n = power2[i];
 		data_prandom(n);
 		DiscreteFourierTransform_v1(n);
 	#ifdef P_VALUE
@@ -2129,7 +2129,7 @@ int main(int argc, char **argv){
 
 	fprintf(out_file, "small factor\n");
 	for (i = 0; i < SIZE_W; i++){
-		n = small_factors_w[i];
+		n = small_factors[i];
 		data_prandom(n);
 		DiscreteFourierTransform_v1(n);
 	#ifdef P_VALUE
@@ -2142,9 +2142,9 @@ int main(int argc, char **argv){
 
 	fprintf(out_file, "prime\n");
 	signal(SIGALRM, sig_handler);
-	alarm(7 * 24 * 60 * 60); // abort after a week
+	alarm(2 * 24 * 60 * 60); // abort after two days
 	for (i = 0; i < SIZE_W; i++){
-		n = primes_w[i];
+		n = primes[i];
 		data_prandom(n);	
 		DiscreteFourierTransform_v1(n);
 
@@ -2190,15 +2190,15 @@ int cut = 0;
 
 #ifdef POW2
 	strcat(filename_buf, filename);
-	data = power2_w;
+	data = power2;
 	p_values = res_pow2;
 #elif SMALL_FACTOR
 	strcat(filename_buf, filename);
-	data = small_factors_w;
+	data = small_factors;
 	p_values = res_small_factors;
 #elif PRIME
 	strcat(filename_buf, filename);
-	data = primes_w;
+	data = primes;
 	p_values = res_primes;
 #endif
 	printf("output: %s\n", filename_buf);
@@ -2220,6 +2220,7 @@ int cut = 0;
 		benchmark(n, out_file);
 	#ifdef P_VALUE
 		pv1 = p_values[i];
+		printf("Sol: %0.2f", pv1);
 		if (fabs(pv1 - pv2) < ERR) {
 			printf("[OK] \n");
 		} else{

@@ -13,7 +13,7 @@ x_pr = [3, 5, 7, 13, 31, 61, 127, 229, 509, 1013, 2039, 4093, 8191, 16381, 32771
     2097143, 4194301, 8388593, 16777213, 33554393, 67108837]
 
 config_a = [('brown', '.', '-'), ('blue', '.', '-'), ('darkgreen', '.', '-'), ('cyan', '.', '-'), ('magenta', '.', '-'),
-    ('midnightblue', '.', '-'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('black', '.', '-')]
+    ('midnightblue', '.', '-'), ('purple', '.', '-'), ('dimgrey', '.', '--'), ('black', '*', '--')]
 
 config_fftw_mt = [('black', '.', '-'), ('black', 'o', '--'), ('black', '+', ':'), ('dimgrey', '1', '-.')]
 
@@ -48,6 +48,8 @@ def get_flop(y, cpx, x_labels, num_values):
 
 def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=False, whole=False):
 
+    print(config)
+
     if type == "pow2":
         x_labels = x_pow2
     elif type == "small_factor":
@@ -73,7 +75,13 @@ def graph(lst_data, cpx=True, config=config_a, name_f="", type="pow2", extended=
         li = config[counter][2]
         if name == "KFR":
             co = "dimgrey"
+            ma = '.'
+            li = '--'
         if name == "FFTW":
+            co = 'black'
+            ma = '.'
+            li = '-'
+        if name == "FFTS":
             co = 'black'
             ma = '*'
             li = '--'
@@ -358,37 +366,37 @@ def main():
     #### FFTW multi thread version ###
     ##################################
 
-    plot_fftw_mt_cpx_pow2()
-    plot_fftw_mt_cpx_small_factor()
-    plot_fftw_mt_cpx_prime()
+    # plot_fftw_mt_cpx_pow2()
+    # plot_fftw_mt_cpx_small_factor()
+    # plot_fftw_mt_cpx_prime()
 
-    plot_fftw_mt_real_pow2()
-    plot_fftw_mt_real_small_factor()
-    plot_fftw_mt_real_prime()
+    # plot_fftw_mt_real_pow2()
+    # plot_fftw_mt_real_small_factor()
+    # plot_fftw_mt_real_prime()
 
     ##################################
     ##########  Placement  ###########
     ##################################
 
-    plot_placement_cpx_pow2()
-    plot_placement_cpx_small_factor()
-    plot_placement_cpx_prime()
+    # plot_placement_cpx_pow2()
+    # plot_placement_cpx_small_factor()
+    # plot_placement_cpx_prime()
 
-    plot_placement_real_pow2()
-    plot_placement_real_small_factor()
-    plot_placement_real_prime()
+    # plot_placement_real_pow2()
+    # plot_placement_real_small_factor()
+    # plot_placement_real_prime()
 
     ##################################
     #####  Different params  #########
     ##################################
 
-    plot_params_cpx_pow2()
-    plot_params_cpx_small_factor()
-    plot_params_cpx_prime()
+    # plot_params_cpx_pow2()
+    # plot_params_cpx_small_factor()
+    # plot_params_cpx_prime()
 
-    plot_params_real_pow2()
-    plot_params_real_small_factor()
-    plot_params_real_prime()
+    # plot_params_real_pow2()
+    # plot_params_real_small_factor()
+    # plot_params_real_prime()
 
 
 if __name__ == '__main__':

@@ -98,6 +98,7 @@ void DiscreteFourierTransformMKL_i(int n){ /* in-place */
     DFTI_DESCRIPTOR_HANDLE desc_handle = NULL;
 
     status = DftiCreateDescriptor(&desc_handle, DFTI_DOUBLE, DFTI_COMPLEX, 1, n);
+    
     status = DftiSetValue(desc_handle, DFTI_PLACEMENT, DFTI_INPLACE);
     status = DftiCommitDescriptor(desc_handle);
     status = DftiComputeForward(desc_handle, inOut);

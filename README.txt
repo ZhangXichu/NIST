@@ -128,7 +128,6 @@ the funtion OverlappingTemplateMatchings2() in overlappingTemplateMatchings.c
 *                                                                       *
 *               Performance testing of FFT libraries                    *
 *                        Xichu Zhang                                    *
-*                    472816@mail.muni.cz                                *
 *                                                                       *
 *************************************************************************
 *                                                                       *
@@ -158,12 +157,14 @@ Those p-values are precalculated and also stored in the test_data.h file.
 *                                                                       *
 *************************************************************************
 Do not build the system by directly running the makefile because some of 
-the macros are not defined (they are switched in compile time). Use the 
-test.sh script to build the project instead. 
+the macros are not defined. Use the test.sh script to build the project 
+instead. 
 All the tests are automated using the test.sh script, which means after 
 running this script, all the tests will be run sequentially. It is also 
 possible to comment out some of the tests in the verify/test function 
 to omit them or modify the functions' arguments for testing each library.
+In order to test randomness, different versions of FFT using different
+libraries can be switched in stat_fncs.h via macro DiscreteFourierTransform_v2.
 
 *************************************************************************
 *                                                                       *
